@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+// Mô tả một cấu trúc dữ liệu (schema) cho đối tượng Hotel trong CSDL mongoDB
 const HotelSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -50,4 +51,5 @@ const HotelSchema = new mongoose.Schema({
     }
 });
 
+// Xuất ra Schema Hotel dưới dạng mô hình Hotel
 export default mongoose.model("Hotel", HotelSchema);

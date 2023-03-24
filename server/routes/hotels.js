@@ -6,12 +6,13 @@ const router = express();
 //CREATE
 router.post("/", async (req, res) => {
     
-    // Tạo mới một đối tượng hotel
+    // Tạo mới một đối tượng newhotel từ mô hình Hotel với dữ liệu từ request
     const newHotel = new Hotel(req.body);
     
     try {
         // Lưu đối tượng đó vào db thông qua Hotel Model
         const savedHotel = await newHotel.save();
+        // Nếu lưu thành công thì trả về data vừa được lưu
         res.status(200).json(savedHotel);
     } catch (err) {
         res.status(500).json(err);
@@ -33,9 +34,33 @@ router.put("/:id", async (req, res) => {
 });
 
 //DELETE
+router.delete("/:id", async (req, res) => {    
+    try {
+        await Hotel.findByIdAndDelete(req.params.id);
+        res.status(200).json("Delete hotel succesful!");
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
 
 //GET ONE
+router.get("/:id", async (req, res) => {    
+    try {
+        const getHotel = await Hotel.findById(req.params.id);
+        res.status(200).json(getHotel);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
 
 //GET ALL
+router.get("/", async (req, res) => {    
+    try {
+        const getHotels = await Hotel.find();
+        res.status(200).json(getHotels);
+    } catch (err) {
+        res.status(500).json(err);
+    }
+});
 
 export default router;
