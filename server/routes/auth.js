@@ -1,13 +1,13 @@
 import express from "express";
+import { login, register } from "../controllers/auth_controller.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-    res.send("This is auth endpoint!");
-});
+// REGISTER
+router.post("/register", register);
 
-router.get("/register", (req, res) => {
-    res.send("This is register endpoint!");
-});
+// LOGIN
+// Khi đăng nhập thi gửi dữ liệu về server nên dùng phương thức post
+router.post("/login", login);
 
 export default router;
