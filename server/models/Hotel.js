@@ -1,6 +1,8 @@
 import mongoose from 'mongoose';
 
 // Mô tả một cấu trúc dữ liệu (schema) cho đối tượng Hotel trong CSDL mongoDB
+// {} đại diện cho một đối tượng cấu trúc dữ liệu của mongoose
+// Tạo ra một đối tượng Schema (Mô tả cấu trúc dữ liệu mongoDB) mới với các mô tả thông tin như sau:
 const HotelSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -38,6 +40,7 @@ const HotelSchema = new mongoose.Schema({
         min: 0,
         max: 5,
     },
+    // Thuộc tính rooms sẽ chứa một mảng các chuỗi. Mỗi chuỗi là id của đối tượng Room
     rooms: {
         type: [String],
     },
