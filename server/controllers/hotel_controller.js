@@ -53,11 +53,29 @@ export const getHotel = async (req, res, next) => {
     }
 };
 
-//GET ALL
+//GET ALL OR SEARCH HOTEL
+// Có thể sử dụng hàm get all hotel để tìm kiếm khách sạn theo tên, thành phố, giá cả....
 export const getHotels = async (req, res, next) => {
 
+    // Trích xuất dữ liệu trong js:
+    // Tạo ra một đối tượng có các thuộc tính là các dữ liệu cần trích xuất và một toán tử ...others hoặc ...otherDetails để chứa
+    // các dữ liệu còn lại.
+    // Sự khác nhau giữa others và otherDetails.
+    // others: Là một đối tượng có chứa các thuộc tính khác nhau, mỗi thuộc tính này có thể là bất kỳ tuỳ vào trường hợp,
+    // mỗi thuộc tính này lại không cần phải liên quan đến một đối tượng cụ thể.
+    // otherDetails: Là một đối tượng chứa các thuộc tính khác nhau, tuy nhiên khác với others, các thuộc tính này liên quan đến
+    // một đối tượng cụ thể. Các thuộc tính này có thể là các thuộc tính bổ sung thêm thông tin cho một đối tượng.
+    // VD: Ta muốn lưu thông tin một người dùng với dữ liệu được gửi từ client. Tuy nhiên đối tượng này là không có trường học vấn.
+    // Lúc này ta có thể sử dụng biến ...otherDetails để lưu thông tin học vấn này vào đối tượng người dùng.
+    // Nếu là others thì ta có thể thêm một thông tin hoàn toàn không liên quan đến với người dùng này. 
+    // VD: Lưu thêm thông tin "isMinhloveThong": true. 
+    const { min, max, limit, ...others } = req.query;
+
     try {
-        const getHotels = await Hotel.find();
+        const getHotels = await Hotel.find({
+            ...others,
+            cheapestPrice: { $gt: min || 1, $lt: max || 999}
+        }).limit(limit);
         res.status(200).json(getHotels);
     } catch (err) {
         next(err);
@@ -73,8 +91,9 @@ export const countByCity = async (req, res, next) => {
         // Vì lúc này truy vấn đề nhiều đối tượng có thuộc tính là city nên hàm sẽ trả về nhiều promise
         // Mỗi promise tương ứng với một thành phố cho nên cần gọi hàm Promise.all() để trả về một list các
         // promise đó nếu truy vấn tới và đếm số document có cùng city thành công.
-        const list = await Promise.all(cities.map(city => {
-            return Hotel.countDocuments({city: city});
+        const list = await Promise.all(cities.map((city) => {
+            // Đếm document theo trường city có dữ liệu là city (dữ liệt city có được từ mảng cities): VD: "city": Ho Chi Minh
+            return Hotel.countDocuments({ city: city });
         }));
         res.status(200).json(list);
         // VD: ?cities=Ho Chi Minh, Ha Noi
@@ -90,3 +109,25 @@ export const countByCity = async (req, res, next) => {
 };
 
 // COUNT BY TYPE
+export const countByType = async (req, res, next) => {
+
+    try {
+        const hotelCount = await Hotel.countDocuments({ type: "hotel" });
+        const apartmentCount = await Hotel.countDocuments({ type: "apartment" });
+        const resortCount = await Hotel.countDocuments({ type: "resort" });
+        const villaCount = await Hotel.countDocuments({ type: "villa" });
+        const cabinCount = await Hotel.countDocuments({ type: "cabin" });
+
+        res.status(200).json([
+            { type: "hotel", count: hotelCount },
+            { type: "apartment", count: apartmentCount },
+            { type: "resort", count: resortCount },
+            { type: "villa", count: villaCount },
+            { type: "cabin", count: cabinCount }
+        ]);
+
+    } catch (err) {
+        next(err);
+    }
+
+};

@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const BookingSchema = new mongoose.Schema(
+const BookSchema = new mongoose.Schema(
     {
         user: {
             type: String,
@@ -30,4 +30,4 @@ const BookingSchema = new mongoose.Schema(
     { timestamps: true } // Ngày giờ tạo, cập nhật booking
 );
 
-export default mongoose.model("Booking", BookingSchema);
+export default mongoose.model("Booking", BookSchema);
