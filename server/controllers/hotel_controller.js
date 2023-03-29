@@ -1,4 +1,6 @@
 import Hotel from "../models/Hotel.js";
+import Room from "../models/Room.js";
+
 
 //CREATE
 export const createHotel = async (req, res, next) => {
@@ -74,19 +76,38 @@ export const getHotels = async (req, res, next) => {
 
         const getHotels = await Hotel.find({
             ...others,
-            name: {$regex: name || "", $options: "i"},
-            cheapestPrice: { $gt: min || 1, $lt: max || 999}
+            name: { $regex: name || "", $options: "i" },
+            cheapestPrice: { $gt: min || 1, $lt: max || 999 }
         }).limit(limit);
-        console.log({
-            ...others,
-            name: {$regex: name || "", $options: "i"},
-            cheapestPrice: { $gt: min || 1, $lt: max || 999}
-        })
         res.status(200).json(getHotels);
     } catch (err) {
         next(err);
     }
 };
+
+// GET HOTEL ROOMS
+export const getHotelRooms = async (req, res, next) => {
+    try {
+        // Truy vấn tới khách sạn theo id khách sạn được gửi từ request
+        const hotel = await Hotel.findById(req.params.id);
+        // Sau khi truy vấn xong, ta thu được một đối tượng khách sạn.
+        // Với mục đích là truy vấn đến tất cả phòng của một khách sạn, vì trường rooms của hotel là một mảng chứa các chuỗi
+        // roomid thế nên khi ta truy vấn đến trường rooms này, ta sẽ thu được một mảng các roomid. Để có thể truy vấn đến đối tượng
+        // phòng từ những roomid này, ta cần dùng hàm Promise.all(). Hàm này sẽ trả về một chuỗi các promise khi các promise này
+        // được xử lý xong.
+        // Vì thuộc tính rooms là một mảng chứa các id nên ta sử dụng hàm map để tạo ra một đối tượng room mới dựa vào phần tử
+        // thuộc mảng rooms này.
+        // Sau đó ta sử dụng đối tượng room vừa được tạo để truy vấn đến đối tượng phòng có id = room.
+        const list = await Promise.all(
+            hotel.rooms.map((room) => {
+                return Room.findById(room);
+            })
+        );
+        res.status(200).json(list);
+    } catch (err) {
+        next(err);
+    }
+}
 
 // COUNT BY CITY
 export const countByCity = async (req, res, next) => {
