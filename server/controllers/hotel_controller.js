@@ -71,11 +71,17 @@ export const getHotels = async (req, res, next) => {
     // VD: Lưu thêm thông tin "isMinhloveThong": true. 
     const { name, min, max, limit, ...others } = req.query;
     try {
+
         const getHotels = await Hotel.find({
             ...others,
-            name: {$regex: name, $options: "i"},
+            name: {$regex: name || "", $options: "i"},
             cheapestPrice: { $gt: min || 1, $lt: max || 999}
         }).limit(limit);
+        console.log({
+            ...others,
+            name: {$regex: name || "", $options: "i"},
+            cheapestPrice: { $gt: min || 1, $lt: max || 999}
+        })
         res.status(200).json(getHotels);
     } catch (err) {
         next(err);
