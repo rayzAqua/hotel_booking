@@ -69,11 +69,11 @@ export const getHotels = async (req, res, next) => {
     // Lúc này ta có thể sử dụng biến ...otherDetails để lưu thông tin học vấn này vào đối tượng người dùng.
     // Nếu là others thì ta có thể thêm một thông tin hoàn toàn không liên quan đến với người dùng này. 
     // VD: Lưu thêm thông tin "isMinhloveThong": true. 
-    const { min, max, limit, ...others } = req.query;
-
+    const { name, min, max, limit, ...others } = req.query;
     try {
         const getHotels = await Hotel.find({
             ...others,
+            name: {$regex: name, $options: "i"},
             cheapestPrice: { $gt: min || 1, $lt: max || 999}
         }).limit(limit);
         res.status(200).json(getHotels);

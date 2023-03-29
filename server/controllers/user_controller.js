@@ -40,8 +40,10 @@ export const getUser = async (req, res, next) => {
 // GET ALL
 export const getUsers = async (req, res, next) => {
 
+    const {password, photo, limit, ...others} = req.query;
+
     try {
-        const getUsers = await User.find();
+        const getUsers = await User.find({...others});
         res.status(200).json(getUsers);
     } catch (err) {
         next(err);
