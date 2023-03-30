@@ -2,10 +2,6 @@ import mongoose from "mongoose";
 
 const BookSchema = new mongoose.Schema(
     {
-        user: {
-            type: String,
-            required: true,
-        },
         hotel: {
             type: String,
             required: true,

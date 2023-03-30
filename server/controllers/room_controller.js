@@ -45,21 +45,6 @@ export const updateRoom = async (req, res, next) => {
     }
 };
 
-// UPDATE ROOM BOOKEDD DATE
-export const updateRoomBookedDate = async (req, res, next) => {
-    try {
-        // Truy vấn đến đối tượng số phòng của thuộc tính roomNumbers bằng cách tạo ra một đối tượng có _id là id đc truyền từ client
-        // Sau khi truy vấn xong tiền hành thêm ngày phòng được đặt vào thuộc tính dateBooked của đối tượng roomNumbers.
-        // Cú pháp truy vấn với thuộc tính của thuộc tính như sau: thuoctinhcha.$.thuoctinhcon.
-        await Room.updateOne({ "roomNumbers._id": req.params.id },
-            {$push: {"roomNumbers.$.dateBookeds": req.body.dates}}
-        );
-        res.status(200).json("Room booked date has been update!");
-    } catch (err) {
-        next(err);
-    }
-};
-
 // DELETE
 export const deleteRoom = async (req, res, next) => {
 

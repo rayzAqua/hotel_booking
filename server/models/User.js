@@ -20,10 +20,14 @@ const UserSchema = new mongoose.Schema(
         },
         image: {
             type: String,
+            default: "https://demoda.vn/wp-content/uploads/2022/12/anh-meo-ngao-chup-can-mat.jpg"
         },
         isAdmin: {
             type: Boolean,
             default: false
+        },
+        bookings: {
+            type: [String],
         }
     }, 
     { timestamps: true } // Ngày giờ tạo, cập nhật thông tin
