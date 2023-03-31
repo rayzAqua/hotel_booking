@@ -125,7 +125,7 @@ export const countByCity = async (req, res, next) => {
         // Mỗi promise tương ứng với một thành phố cho nên cần gọi hàm Promise.all() để trả về một list các
         // promise đó nếu truy vấn tới và đếm số document có cùng city thành công.
         const list = await Promise.all(cities.map((city) => {
-            // Đếm document theo trường city có dữ liệu là city (dữ liệt city có được từ mảng cities): VD: "city": Ho Chi Minh
+            // Đếm document theo trường city có dữ liệu là city (dữ liệu city có được từ mảng cities): VD: "city": Ho Chi Minh
             return Hotel.countDocuments({ city: city });
         }));
         res.status(200).json(list);
