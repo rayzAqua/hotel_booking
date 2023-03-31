@@ -16,7 +16,7 @@ export const verifyToken = (req, res, next) => {
         // Tạo mới một req: 
         //Sau khi xác định là đúng token, tiến hành tạo một request mới là req.user.
         // req.user được đùng để chứa các thông tin của người dùng sau khi token được giải mã.
-        req.user = userInfo;
+        req.user = userInfo; // id admin
         next();
     });
 };

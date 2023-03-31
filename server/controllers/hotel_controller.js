@@ -1,5 +1,6 @@
 import Hotel from "../models/Hotel.js";
 import Room from "../models/Room.js";
+import { regex } from "../utils/regex.js";
 
 
 //CREATE
@@ -71,12 +72,17 @@ export const getHotels = async (req, res, next) => {
     // Lúc này ta có thể sử dụng biến ...otherDetails để lưu thông tin học vấn này vào đối tượng người dùng.
     // Nếu là others thì ta có thể thêm một thông tin hoàn toàn không liên quan đến với người dùng này. 
     // VD: Lưu thêm thông tin "isMinhloveThong": true. 
-    const { name, min, max, limit, ...others } = req.query;
-    try {
+    const { name, city, min, max, limit, ...others } = req.query;
 
+    // Định nghĩa những chuỗi chính quy cho việc tìm kiếm
+    const hotelName = regex(name);
+    const hotelCity = regex(city);
+
+    try {
         const getHotels = await Hotel.find({
             ...others,
-            name: { $regex: name || "", $options: "i" },
+            name: { $regex: hotelName, $options: "im" },
+            city: { $regex: hotelCity, $options: "im" },
             cheapestPrice: { $gt: min || 1, $lt: max || 999 }
         }).limit(limit);
         res.status(200).json(getHotels);

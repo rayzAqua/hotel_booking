@@ -1,5 +1,6 @@
 import Booking from "../models/Booking.js";
 import User from "../models/User.js";
+import { regex } from "../utils/regex.js";
 
 // UPDATE
 export const updateUser = async (req, res, next) => {
@@ -41,10 +42,27 @@ export const getUser = async (req, res, next) => {
 // GET ALL
 export const getUsers = async (req, res, next) => {
 
-    const { password, photo, limit, ...others } = req.query;
+    const { username, email, phone, password, photo, limit, ...others } = req.query;
 
+    const userName = regex(username);
+    const userEmail = regex(email);
+    const userPhone = regex(phone);
+    
     try {
-        const getUsers = await User.find({ ...others }).limit(limit);
+        const getUsers = await User.find({ 
+            ...others,
+            username: { $regex: userName, $options: "im" },
+            email: { $regex: userEmail, $options: "im" },
+            phoneNumber: { $regex: userPhone, $options: "im" } 
+        }).limit(limit);
+
+        console.log({ 
+            ...others,
+            username: { $regex: userName, $options: "im" },
+            email: { $regex: userEmail, $options: "im" },
+            phoneNumber: { $regex: userPhone, $options: "im" } 
+        })
+
         res.status(200).json(getUsers);
     } catch (err) {
         next(err);
@@ -55,7 +73,7 @@ export const getUsers = async (req, res, next) => {
 export const getUserBookings = async (req, res, next) => {
 
     try {
-        const user = await User.findOne({email: req.params.email});
+        const user = await User.findOne({ email: req.params.email });
         try {
             const list = await Promise.all(
                 user.bookings.map((booking) => {
