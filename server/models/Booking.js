@@ -5,10 +5,12 @@ const BookSchema = new mongoose.Schema(
         hotel: {
             type: String,
             required: true,
+            ref: "Hotel",
         },
         rooms: {
             type: [String],
             required: true,
+            ref: "Room",
         },
         bookingPrice: {
             type: Number,

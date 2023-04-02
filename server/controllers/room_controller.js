@@ -87,14 +87,3 @@ export const getRooms = async (req, res, next) => {
         next(err);
     }
 };
-
-// COUNT ROOM
-export const countRoom = async (req, res, next) => {
-
-    try {
-        const roomQuantity = await Room.countDocuments();
-        res.status(200).json({quantity: roomQuantity});
-    } catch (err) {
-        next(err);
-    }
-}

@@ -164,3 +164,15 @@ export const countByType = async (req, res, next) => {
     }
 
 };
+
+// COUNT HOTEL ROOM
+export const countHotelRoom = async (req, res, next) => {
+
+    try {
+        const hotel = await Hotel.findById(req.params.id);
+        const roomQuantity = hotel.rooms.length;
+        res.status(200).json({quantity: roomQuantity});
+    } catch (err) {
+        next(err);
+    }
+}
