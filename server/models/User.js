@@ -28,6 +28,7 @@ const UserSchema = new mongoose.Schema(
         },
         bookings: {
             type: [String],
+            ref: "Booking",
         }
     }, 
     { timestamps: true } // Ngày giờ tạo, cập nhật thông tin
