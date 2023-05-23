@@ -5,12 +5,14 @@ import authRoute from "./routes/auth.js";
 import usersRoute from "./routes/users.js";
 import hotelsRoute from "./routes/hotels.js";
 import roomsRoute from "./routes/rooms.js";
+import bookingsRoute from "./routes/bookings.js";
 import cookieParser from "cookie-parser";
 
 const app = express();
 
 dotenv.config();
 
+// Thực hiện kết nối đến database
 const connect = async () => {
 try {
     await mongoose.connect(process.env.MONGO_CONNECT);
@@ -28,13 +30,14 @@ mongoose.connection.on("disconnected", () => {
 //Middlewares
 app.use(cookieParser());
 
-app.get("/", (req, res) => {
-  return res.send("This is server home page!");
-}); 
-
 // Phân tích các yêu cầu HTTP và chuyển đổi chúng thành dạng JSON, cho phép Express hiểu được các yêu cầu và phản hồi từ client-server
 // được gửi dưới dạng JSON.
 app.use(express.json());
+
+// Lần đầu vào đường dẫn server
+app.get("/", (req, res) => {
+  return res.send("This is server home page!");
+});
 
 // Khi client thực hiện một yêu cầu vào endpoint: "/api/auth/register" thì nó sẽ đi qua middleware này sẽ được xử lý bởi
 // hàm middleware authRoute, hàm này sẽ bỏ qua các endpoint khác và xử lý yêu cầu của endpoint "register".
@@ -42,6 +45,7 @@ app.use("/api/auth", authRoute);
 app.use("/api/users", usersRoute);
 app.use("/api/hotels", hotelsRoute);
 app.use("/api/rooms", roomsRoute);
+app.use("/api/bookings", bookingsRoute);
 
 app.use((err, req, res, next) => {
   const errStatus = err.status || 500;

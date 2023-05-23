@@ -6,6 +6,7 @@ import jwt from "jsonwebtoken";
 // REGISTER
 export const register = async (req, res, next) => {
 
+    // Bổ sung refeshToken
     try {
         const salt = bcrypt.genSaltSync(10);
         const hash = bcrypt.hashSync(req.body.password, salt);
