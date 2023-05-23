@@ -37,7 +37,7 @@ app.use(express.json());
 // Lần đầu vào đường dẫn server
 app.get("/", (req, res) => {
   return res.send("This is server home page!");
-}); 
+});
 
 // Khi client thực hiện một yêu cầu vào endpoint: "/api/auth/register" thì nó sẽ đi qua middleware này sẽ được xử lý bởi
 // hàm middleware authRoute, hàm này sẽ bỏ qua các endpoint khác và xử lý yêu cầu của endpoint "register".

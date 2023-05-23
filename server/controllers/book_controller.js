@@ -7,8 +7,8 @@ import Room from "../models/Room.js";
 // CREATE BOOKING
 export const createBooking = async (req, res, next) => {
 
-    const email = req.params.email;
-    const newBooking = Booking(req.body);
+    const userId = req.params.userid;
+    const newBooking = new Booking(req.body);
 
     try {
         // Lưu booking vào csdl
@@ -16,7 +16,7 @@ export const createBooking = async (req, res, next) => {
         try {
             // Sau khi lưu booking mới vào csdl, tiến hành lưu booking đó vào user bằng cách lưu mã booking vào trường bookings của user
             await User.findOneAndUpdate(
-                { email: email },
+                { _id: userId },
                 { $push: { bookings: savedBooking._id } }
             );
         } catch (err) {
@@ -31,13 +31,13 @@ export const createBooking = async (req, res, next) => {
 // DELETE BOOKING
 export const deleteBooking = async (req, res, next) => {
 
-    const email = req.params.email;
+    const userId = req.params.userid;
 
     try {
         await Booking.findByIdAndDelete(req.params.id);
         try {
             await User.findOneAndUpdate(
-                { email: email },
+                { _id: userId },
                 { $pull: { bookings: req.params.id } }
             );
         } catch (err) {

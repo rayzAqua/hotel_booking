@@ -12,10 +12,6 @@ const BookSchema = new mongoose.Schema(
             required: true,
             ref: "Room",
         },
-        bookingPrice: {
-            type: Number,
-            required: true,
-        },
         startDate: {
             type: Date,
             required: true,
