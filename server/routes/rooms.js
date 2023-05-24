@@ -1,6 +1,6 @@
 import express from "express";
 import { createRoom, updateRoom, deleteRoom, getRoom, getRooms } from "../controllers/room_controller.js";
-import { verifyAdmin } from "../utils/verifyToken.js";
+import { verifyAdmin, verifyUser } from "../utils/verifyToken.js";
 
 const router = express();
 
@@ -17,6 +17,6 @@ router.delete("/:id/:hotelid", verifyAdmin, deleteRoom);
 router.get("/id=:id", getRoom);
 
 // GET ALL
-router.get("/", getRooms);
+router.get("/", verifyAdmin, getRooms);
 
 export default router;

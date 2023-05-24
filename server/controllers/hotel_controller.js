@@ -72,17 +72,27 @@ export const getHotels = async (req, res, next) => {
     // Lúc này ta có thể sử dụng biến ...otherDetails để lưu thông tin học vấn này vào đối tượng người dùng.
     // Nếu là others thì ta có thể thêm một thông tin hoàn toàn không liên quan đến với người dùng này. 
     // VD: Lưu thêm thông tin "isMinhloveThong": true. 
-    const { name, city, min, max, limit, ...others } = req.query;
+    const { name, type, phone, city, address, distance, title, min, max, limit, ...others } = req.query;
 
     // Định nghĩa những chuỗi chính quy cho việc tìm kiếm
     const hotelName = regex(name);
+    const typeHotel = regex(type);
     const hotelCity = regex(city);
+    const addressHotel = regex(address);
+    const phoneNumber = regex(phone);
+    const distanceHotel = regex(distance);
+    const hotelTitle = regex(title);
 
     try {
         const getHotels = await Hotel.find({
-            ...others,
+            // ...others,
             name: { $regex: hotelName, $options: "im" },
+            type: { $regex: typeHotel, $options: "im" },
             city: { $regex: hotelCity, $options: "im" },
+            phone: { $regex: phoneNumber, $options: "im" },
+            address: { $regex: addressHotel, $options: "im" },
+            distance: { $regex: distanceHotel, $options: "im" },
+            title: { $regex: hotelTitle, $options: "im" },
             cheapestPrice: { $gt: min || 1, $lt: max || 999 }
         }).limit(limit);
         res.status(200).json(getHotels);
@@ -91,43 +101,28 @@ export const getHotels = async (req, res, next) => {
     }
 };
 
-// GET HOTEL ROOMS
-export const getHotelRooms = async (req, res, next) => {
-    try {
-        // Truy vấn tới khách sạn theo id khách sạn được gửi từ request
-        const hotel = await Hotel.findById(req.params.id);
-        // Sau khi truy vấn xong, ta thu được một đối tượng khách sạn.
-        // Với mục đích là truy vấn đến tất cả phòng của một khách sạn, vì trường rooms của hotel là một mảng chứa các chuỗi
-        // roomid thế nên khi ta truy vấn đến trường rooms này, ta sẽ thu được một mảng các roomid. Để có thể truy vấn đến đối tượng
-        // phòng từ những roomid này, ta cần dùng hàm Promise.all(). Hàm này sẽ trả về một chuỗi các promise khi các promise này
-        // được xử lý xong.
-        // Vì thuộc tính rooms là một mảng chứa các id nên ta sử dụng hàm map để tạo ra một đối tượng room mới dựa vào phần tử
-        // thuộc mảng rooms này.
-        // Sau đó ta sử dụng đối tượng room vừa được tạo để truy vấn đến đối tượng phòng có id = room.
-        const list = await Promise.all(
-            hotel.rooms.map((room) => {
-                return Room.findById(room);
-            })
-        );
-        res.status(200).json(list);
-    } catch (err) {
-        next(err);
-    }
-}
-
 // COUNT BY CITY
 export const countByCity = async (req, res, next) => {
 
     const cities = req.query.cities.split(",");
-
+    
     try {
         // Vì lúc này truy vấn đề nhiều đối tượng có thuộc tính là city nên hàm sẽ trả về nhiều promise
         // Mỗi promise tương ứng với một thành phố cho nên cần gọi hàm Promise.all() để trả về một list các
         // promise đó nếu truy vấn tới và đếm số document có cùng city thành công.
-        const list = await Promise.all(cities.map((city) => {
+        const listCount = await Promise.all(cities.map((city) => {
             // Đếm document theo trường city có dữ liệu là city (dữ liệu city có được từ mảng cities): VD: "city": Ho Chi Minh
-            return Hotel.countDocuments({ city: city });
+            const cityName = regex(city);
+            return Hotel.countDocuments({ city: cityName });
         }));
+
+        const list = cities.map((city, index) => {
+            return {
+                city: city,
+                count: listCount[index],
+            }
+        })
+
         res.status(200).json(list);
         // VD: ?cities=Ho Chi Minh, Ha Noi
         // promise1 = .... map Ho Chi Minh
@@ -164,6 +159,30 @@ export const countByType = async (req, res, next) => {
     }
 
 };
+
+// GET HOTEL ROOMS
+export const getHotelRooms = async (req, res, next) => {
+    try {
+        // Truy vấn tới khách sạn theo id khách sạn được gửi từ request
+        const hotel = await Hotel.findById(req.params.id);
+        // Sau khi truy vấn xong, ta thu được một đối tượng khách sạn.
+        // Với mục đích là truy vấn đến tất cả phòng của một khách sạn, vì trường rooms của hotel là một mảng chứa các chuỗi
+        // roomid thế nên khi ta truy vấn đến trường rooms này, ta sẽ thu được một mảng các roomid. Để có thể truy vấn đến đối tượng
+        // phòng từ những roomid này, ta cần dùng hàm Promise.all(). Hàm này sẽ trả về một chuỗi các promise khi các promise này
+        // được xử lý xong.
+        // Vì thuộc tính rooms là một mảng chứa các id nên ta sử dụng hàm map để tạo ra một đối tượng room mới dựa vào phần tử
+        // thuộc mảng rooms này.
+        // Sau đó ta sử dụng đối tượng room vừa được tạo để truy vấn đến đối tượng phòng có id = room.
+        const list = await Promise.all(
+            hotel.rooms.map((room) => {
+                return Room.findById(room);
+            })
+        );
+        res.status(200).json(list);
+    } catch (err) {
+        next(err);
+    }
+}
 
 // COUNT HOTEL ROOM
 export const countHotelRoom = async (req, res, next) => {
