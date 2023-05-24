@@ -86,8 +86,9 @@ export const getBooking = async (req, res, next) => {
     }
 };
 
-// GET ALL BOOKING
-export const getBookings = async (req, res, next) => {
+
+// GET ALL BOOKING - ADMIN
+export const getAllBookings = async (req, res, next) => {
 
     try {
         // Truy vấn đến tất cả đối tượng booking đồng thời tham chiếu tới đối tượng Hotel và Room.

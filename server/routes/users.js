@@ -29,6 +29,6 @@ router.get("/id=:id", verifyUser, getUser);
 router.get("/", verifyAdmin, getUsers);
 
 // GET USER BOOKINGS
-router.get("/bookings/:email", verifyUser, getUserBookings);
+router.get("/bookings/:userid", verifyUser, getUserBookings);
 
 export default router;

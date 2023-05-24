@@ -72,8 +72,10 @@ export const getUsers = async (req, res, next) => {
 // GET USER BOOKING
 export const getUserBookings = async (req, res, next) => {
 
+    const userId = req.params.userid;
+
     try {
-        const user = await User.findOne({ email: req.params.email }).populate("bookings");
+        const user = await User.findOne({ _id: userId }).populate("bookings");
 
         const bookingList = await Promise.all(
             user.bookings.map((booking) => {
