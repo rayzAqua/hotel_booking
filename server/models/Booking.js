@@ -26,6 +26,10 @@ const BookSchema = new mongoose.Schema(
             type: Date,
             required: true,
         },
+        isExpires: {
+            type: Boolean,
+            default: false,
+        }
     },
     { timestamps: true } // Ngày giờ tạo, cập nhật booking
 );

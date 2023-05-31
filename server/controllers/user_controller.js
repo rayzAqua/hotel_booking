@@ -157,7 +157,9 @@ export const getUserBookings = async (req, res, next) => {
             }
         })
 
-        res.status(200).json(bookings);
+        bookings.length <= 0 ? res.status(404) : res.status(200);
+
+        res.json(bookings);
     } catch (err) {
         next(err);
     }

@@ -55,6 +55,7 @@ const HotelSchema = new mongoose.Schema({
     // Thuộc tính rooms sẽ chứa một mảng các chuỗi. Mỗi chuỗi là id của đối tượng Room
     rooms: {
         type: [String],
+        default: [],
     },
     cheapestPrice: {
         type: Number,
