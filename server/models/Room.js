@@ -18,6 +18,11 @@ const RoomSchema = new mongoose.Schema(
             type: Number,
             required: true,
         },
+        // Số lượng phòng
+        quantity: {
+            type: Number,
+            required: true,
+        },
         photos: {
             type: [String],
         },

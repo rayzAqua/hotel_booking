@@ -1,11 +1,12 @@
+import Booking from "../models/Booking.js";
 import Hotel from "../models/Hotel.js";
 import Room from "../models/Room.js";
+import { createError } from "../utils/error.js";
 import { regex } from "../utils/regex.js";
 
 
 //CREATE
 export const createHotel = async (req, res, next) => {
-
     // Tạo mới một đối tượng newhotel từ mô hình Hotel với dữ liệu từ request
     const newHotel = new Hotel(req.body);
 
@@ -23,11 +24,22 @@ export const createHotel = async (req, res, next) => {
 export const updateHotel = async (req, res, next) => {
 
     try {
+        const hotel = await Hotel.findById(req.params.id);
+
+        if (!hotel) {
+            throw createError(404, "Can't find this hotel!");
+        }
+
         const updatedHotel = await Hotel.findByIdAndUpdate(
-            req.params.id, // Truy vấn đến đối tượng có id đc gửi từ client
+            hotel._id, // Truy vấn đến đối tượng có id đc gửi từ client
             { $set: req.body }, // Update đối tượng đó với dữ liệu từ client
             { new: true } // Truy vấn lại đối tượng vừa được update để phản hồi, nếu không có tham số này server sẽ gửi lại đối tượng cũ.
         );
+
+        if (!updatedHotel) {
+            throw createError(400, "Update hotel failure!");
+        }
+
         res.status(200).json(updatedHotel);
     } catch (err) {
         next(err);
@@ -36,10 +48,24 @@ export const updateHotel = async (req, res, next) => {
 
 // DELETE
 export const deleteHotel = async (req, res, next) => {
-
     try {
-        await Hotel.findByIdAndDelete(req.params.id);
-        res.status(200).json("Delete hotel succesful!");
+        const hotel = await Hotel.findById(req.params.id);
+
+        if (!hotel) {
+            throw createError(404, "Can't find this hotel!");
+        }
+
+        const deletedHotel = await Hotel.findByIdAndDelete(hotel._id);
+
+        if (!deletedHotel) {
+            throw createError(400, "Delete hotel failure!");
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Delete hotel succesful!",
+            deletedHotel: deletedHotel,
+        });
     } catch (err) {
         next(err);
     }
@@ -50,6 +76,11 @@ export const getHotel = async (req, res, next) => {
 
     try {
         const getHotel = await Hotel.findById(req.params.id);
+
+        if (!getHotel) {
+            throw createError(404, "Can't find data!");
+        }
+
         res.status(200).json(getHotel);
     } catch (err) {
         next(err);
@@ -95,6 +126,11 @@ export const getHotels = async (req, res, next) => {
             title: { $regex: hotelTitle, $options: "im" },
             cheapestPrice: { $gt: min || 1, $lt: max || 999 }
         }).limit(limit);
+
+        if (!getHotels) {
+            throw createError(404, "Can't find data!");
+        }
+
         res.status(200).json(getHotels);
     } catch (err) {
         next(err);
@@ -105,7 +141,7 @@ export const getHotels = async (req, res, next) => {
 export const countByCity = async (req, res, next) => {
 
     const cities = req.query.cities.split(",");
-    
+
     try {
         // Vì lúc này truy vấn đề nhiều đối tượng có thuộc tính là city nên hàm sẽ trả về nhiều promise
         // Mỗi promise tương ứng với một thành phố cho nên cần gọi hàm Promise.all() để trả về một list các
@@ -165,20 +201,60 @@ export const getHotelRooms = async (req, res, next) => {
     try {
         // Truy vấn tới khách sạn theo id khách sạn được gửi từ request
         const hotel = await Hotel.findById(req.params.id);
-        // Sau khi truy vấn xong, ta thu được một đối tượng khách sạn.
-        // Với mục đích là truy vấn đến tất cả phòng của một khách sạn, vì trường rooms của hotel là một mảng chứa các chuỗi
-        // roomid thế nên khi ta truy vấn đến trường rooms này, ta sẽ thu được một mảng các roomid. Để có thể truy vấn đến đối tượng
-        // phòng từ những roomid này, ta cần dùng hàm Promise.all(). Hàm này sẽ trả về một chuỗi các promise khi các promise này
-        // được xử lý xong.
-        // Vì thuộc tính rooms là một mảng chứa các id nên ta sử dụng hàm map để tạo ra một đối tượng room mới dựa vào phần tử
-        // thuộc mảng rooms này.
-        // Sau đó ta sử dụng đối tượng room vừa được tạo để truy vấn đến đối tượng phòng có id = room.
-        const list = await Promise.all(
-            hotel.rooms.map((room) => {
-                return Room.findById(room);
+
+        if (!hotel) {
+            throw createError(404, "Can't find this hotel!");
+        }
+
+        // Lấy ra một mảng tất cả các phòng của khách sạn vừa được truy vấn.
+        const hotelRooms = await Promise.all(
+            hotel.rooms.map(async (room) => {
+                return await Room.findById(room);
             })
         );
-        res.status(200).json(list);
+
+        // Xử lý thêm nếu phòng = 0 thì trả về gì đó để vô hiệu hoá hoặc booking đến enddate thì cập nhật lại số lượng phòng như cũ
+
+        // Để cập nhật lại số phòng thì cần phải lấy được tất cả các đơn booking đã hết hạn.
+        // Kiểm tra từng phòng của đơn booking với phòng của khách sạn.
+        // Nếu đúng phòng trong đơn booking đúng là phòng của khách sạn thì tính toán lại số lượng phòng và cập nhật lại vào db.
+
+        // Lấy ra tất cả các booking đã hết hạn
+        // Nếu lấy ra theo cách này thì những mảng đã được tính rồi cũng sẽ được lấy lại để tính lại.
+        const currentDate = new Date();
+        const getAllBookingExpires = await Booking.find({ endDate: { $lt: currentDate } });
+
+        // const getBookingExpires = getAllBookings.map((booking) => {
+        //     if (booking.endDate.getTime() < currentDate.getTime()) {
+        //         return booking.rooms;
+        //     }
+        // });
+
+        // console.log(getBookingExpires);
+
+        // const data = [];
+        // for (let bookingExpires of getBookingExpires) {
+        //     for (let room of bookingExpires) {
+        //         data.push(room);
+        //     }
+        // }
+
+        // const returnQuantity = await Promise.all(
+        //     hotelRooms.map(async (hotelRoom) => {
+        //         var newQuantity = 0;
+        //         for (let room of data) {
+        //             if (room.room == hotelRoom._id) {
+        //                 var newQuantity = newQuantity + room.quantity;
+        //             }
+        //         }
+
+        //         await Room.findByIdAndUpdate(hotelRoom._id, {$set: {quantity: newQuantity}});
+
+        //         return await Room.findById(hotelRoom._id);
+        //     })
+        // );
+
+        res.status(200).json(getAllBookings);
     } catch (err) {
         next(err);
     }
@@ -190,7 +266,7 @@ export const countHotelRoom = async (req, res, next) => {
     try {
         const hotel = await Hotel.findById(req.params.id);
         const roomQuantity = hotel.rooms.length;
-        res.status(200).json({quantity: roomQuantity});
+        res.status(200).json({ quantity: roomQuantity });
     } catch (err) {
         next(err);
     }

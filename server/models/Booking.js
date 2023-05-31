@@ -7,11 +7,17 @@ const BookSchema = new mongoose.Schema(
             required: true,
             ref: "Hotel",
         },
-        rooms: {
-            type: [String],
-            required: true,
-            ref: "Room",
-        },
+        rooms: [{
+            room: {
+                type: String,
+                required: true,
+                ref: "Room",
+            },
+            quantity: {
+                type: Number,
+                required: true,
+            },    
+        }],
         startDate: {
             type: Date,
             required: true,
@@ -19,7 +25,7 @@ const BookSchema = new mongoose.Schema(
         endDate: {
             type: Date,
             required: true,
-        }
+        },
     },
     { timestamps: true } // Ngày giờ tạo, cập nhật booking
 );

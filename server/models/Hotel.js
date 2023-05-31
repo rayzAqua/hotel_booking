@@ -26,9 +26,15 @@ const HotelSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    distance: {
+    // Kinh độ
+    latitude: {
         type: String,
         required: true,
+    },
+    // Vĩ độ
+    longitude: {
+        type: String,
+        require: true,
     },
     photos: {
         type: [String],

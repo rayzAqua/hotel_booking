@@ -34,11 +34,22 @@ export const createRoom = async (req, res, next) => {
 // UPDATE
 export const updateRoom = async (req, res, next) => {
     try {
+        const room = await Room.findById(req.params.id);
+
+        if (!room) {
+            throw createError(404, "Can't find this room!");
+        }
+
         const updatedRoom = await Room.findByIdAndUpdate(
-            req.params.id,
+            room._id,
             { $set: req.body },
             { new: true }
         );
+
+        if (!updatedRoom) {
+            throw createError(400, "Update user failure!");
+        }
+
         res.status(200).json(updatedRoom);
     } catch (err) {
         next(err);
@@ -47,20 +58,36 @@ export const updateRoom = async (req, res, next) => {
 
 // DELETE
 export const deleteRoom = async (req, res, next) => {
-
     const hotelid = req.params.hotelid;
 
     try {
-        await Room.findByIdAndDelete(req.params.id);
-        try {
-            await Hotel.findByIdAndUpdate(
-                hotelid,
-                { $pull: { rooms: req.params.id } }
-            );
-        } catch (err) {
-            next(err);
+        const room = await Room.findById(req.params.id);
+
+        if (!room) {
+            throw createError(404, "Can't find this room!");
+        } 
+
+        const deletedRoom = await Room.findByIdAndDelete(req.params.id);
+
+        if (!deletedRoom) {
+            throw createError(400, "Delete room failure!");
         }
-        res.status(200).send("Delete room successful!");
+
+        const removeHotelRoom =  await Hotel.findByIdAndUpdate(
+                hotelid,
+                { $pull: { rooms: req.params.id } },
+                {new: true}
+            );
+        
+            if (!removeHotelRoom) {
+                throw createError(400, "Can't not remove room from this hotel!");
+            }
+       
+        res.status(200).json({ 
+            success: true,
+            message: "Delete room successfully!",
+            deletedRoom: deletedRoom,
+        });
     } catch (err) {
         next(err);
     }
@@ -71,6 +98,11 @@ export const getRoom = async (req, res, next) => {
 
     try {
         const getRoom = await Room.findById(req.params.id);
+
+        if (!getRoom) {
+            throw createError(404, "Can't find data!");
+        }
+
         res.status(200).json(getRoom);
     } catch (err) {
         next(err);
@@ -82,6 +114,11 @@ export const getRooms = async (req, res, next) => {
 
     try {
         const getRooms = await Room.find();
+
+        if (!getRooms) {
+            throw createError(404, "Can't find data!");
+        }
+
         res.status(200).json(getRooms);
     } catch (err) {
         next(err);

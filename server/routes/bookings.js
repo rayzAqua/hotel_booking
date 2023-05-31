@@ -1,5 +1,5 @@
 import express from "express";
-import { createBooking, deleteBooking, getBooking, getUserBookings, getAllBookings } from "../controllers/book_controller.js";
+import { createBooking, getBooking, getAllBookings } from "../controllers/book_controller.js";
 import { verifyAdmin, verifyUser } from "../utils/verifyToken.js";
 
 const router = express.Router();
@@ -7,16 +7,10 @@ const router = express.Router();
 // CREATE
 router.post("/:userid", verifyUser, createBooking);
 
-// DELETE
-router.delete("/:userid/:id", verifyUser, deleteBooking);
-
 // GET ONE
 router.get("/id=:id", verifyUser, getBooking);
 
-// GET ALL USER BOOKING
-router.get("/all/:userid", verifyUser, getUserBookings);
-
-// GET ALL BOOKING OF ALL USER
+// GET ALL BOOKING
 router.get("/", verifyAdmin, getAllBookings);
 
 

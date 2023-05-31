@@ -2,57 +2,84 @@ import Booking from "../models/Booking.js";
 import User from "../models/User.js";
 import Hotel from "../models/Hotel.js";
 import Room from "../models/Room.js";
-
+import { createError } from "../utils/error.js";
 
 // CREATE BOOKING
 export const createBooking = async (req, res, next) => {
-
     const userId = req.params.userid;
-    const newBooking = new Booking(req.body);
+    const bookingHotel = req.body.hotel;
+    const bookingRooms = req.body.rooms;
+    const bookingStartDate = req.body.startDate;
+    const bookingEndDate = req.body.endDate;
 
     try {
-        // Lưu booking vào csdl
-        const savedBooking = await newBooking.save();
-        try {
-            // Sau khi lưu booking mới vào csdl, tiến hành lưu booking đó vào user bằng cách lưu mã booking vào trường bookings của user
+        // Xử lý kiểm tra số lượng phòng còn lại trước khi thực hiện booking. Tìm kiếm các phòng được phép đặt, nếu có phòng nào không
+        // được phép đặt thì báo lỗi, nếu hợp lệ thì trả về mảng phòng hợp lệ.
+        const validRooms = await Promise.all(
+            bookingRooms.map(async (bookingRoom) => {
+                // Truy vấn đến đối tượng phòng trong đơn booking để kiểm tra số lượng phòng.
+                const room = await Room.findById(bookingRoom.room);
+                // Kiểm tra xem có truy vấn được dữ liệu không.
+                if (!room) {
+                    throw createError(404, "Can't find data!");
+                }
+                // Kiểm tra số lượng phòng trong đơn đặt với số lượng phòng còn lại của loại phòng được đặt.
+                // Nếu nhỏ hơn hoặc bằng số lượng phòng còn lại thì lưu vào mảng phòng được phép đặt.
+                if (bookingRoom.quantity > room.quantity) {
+                    throw createError(400, "The number of booked rooms exceeds the remaining available rooms.");
+                }
+                return {
+                    room: bookingRoom.room,
+                    quantity: bookingRoom.quantity,
+                }
+            })
+        );
+
+        const filteredValidRooms = validRooms.filter(room => room !== null);
+
+        if (filteredValidRooms.length > 0) {
+            const newBooking = new Booking({
+                hotel: bookingHotel,
+                rooms: filteredValidRooms,
+                startDate: bookingStartDate,
+                endDate: bookingEndDate,
+            });
+
+            // Tạo một đơn đặt mới.
+            const savedBooking = await newBooking.save();
+
+            // Sau khi tạo mới, lưu booking đó vào User bằng cách lưu id của booking vào trường bookings của User.
             await User.findOneAndUpdate(
                 { _id: userId },
                 { $push: { bookings: savedBooking._id } }
             );
-        } catch (err) {
-            next(err);
-        }
-        res.status(200).send("Booking successful!");
-    } catch (err) {
-        next(err);
-    }
-};
 
-// DELETE BOOKING
-export const deleteBooking = async (req, res, next) => {
-
-    const userId = req.params.userid;
-
-    try {
-        await Booking.findByIdAndDelete(req.params.id);
-        try {
-            await User.findOneAndUpdate(
-                { _id: userId },
-                { $pull: { bookings: req.params.id } }
+            // Cập nhật lại số lượng phòng của các phòng được đặt.
+            await Promise.all(
+                filteredValidRooms.map(async (filteredValidRoom) => {
+                    const room = await Room.findById(filteredValidRoom.room);
+                    const newQuantity = room.quantity - filteredValidRoom.quantity;
+                    await Room.findOneAndUpdate(
+                        { _id: filteredValidRoom.room },
+                        { $set: { quantity: newQuantity } }
+                    );
+                })
             );
-        } catch (err) {
-            next(err);
+
+            // OUTPUT
+            res.status(200).json({
+                success: true,
+                message: "Booking successfully!",
+                data: savedBooking,
+            });
         }
-        res.status(200).send("Delete booking successful!");
     } catch (err) {
         next(err);
     }
 };
 
 // GET ONE BOOKING
-
 export const getBooking = async (req, res, next) => {
-
     try {
         // Truy vấn đến đối tượng booking có khoá = id trong mongoDB.
         const booking = await Booking.findById(req.params.id)
@@ -61,77 +88,51 @@ export const getBooking = async (req, res, next) => {
                 select: ["name", "type", "city", "photos"]
             })
             .populate({
-                path: "rooms",
-                select: ["name", "type"]
+                path: "rooms.room",
+                select: ["name", "type", "quantity"]
             });;
-        
-        
-        const roomName = booking.rooms.map(({name}) => name);
-        const roomType = booking.rooms.map(({type}) => type);
 
-        const {hotel, rooms, ...otherDetails} = booking._doc;
+        // Bắt lỗi không tìm thấy dữ liệu.
+        // Nếu không tìm thấy dữ liệu thì ném lỗi ra để khối try catch bắt và dừng thực thi hàm này.
+        if (!booking) {
+            throw createError(404, "Can't find booking data!");
+        }
 
-        res.status(200).json({
-            ...otherDetails,
-            hotelName: hotel.name,
-            hotelType: hotel.type,
-            hotelCity: hotel.city,
-            hotelPhotos: hotel.photos,
-            roomNames: roomName,
-            roomTypes: roomType,
+        // Trích xuất và định dạng lại thuộc tính của booked room.
+        const roomBookeds = booking.rooms.map((roomBooked) => {
+            return {
+                roomName: roomBooked.room.name,
+                roomType: roomBooked.room.type,
+                quantity: roomBooked.quantity,
+            };
         });
 
+        // Trích xuất hai trường hotel và rooms để tạo mới output json
+        const { _id, hotel, rooms, ...otherDetails } = booking._doc;
+
+        // Tạo mới một đối tượng json từ các thuộc tính đã được trích xuất ở phía trên.
+        const data = {
+            _id: _id,
+            hotel: {
+                hotelName: hotel.name,
+                hotelType: hotel.type,
+                hotelCity: hotel.city,
+                hotelPhotos: hotel.photos,
+            },
+            rooms: roomBookeds,
+            ...otherDetails,
+        }
+
+        // Trả về định dạng output json mới
+        res.status(200).json(data);
+
+        // res.status(200).json(booking);
     } catch (err) {
         next(err);
     }
 };
 
-// GET ALL USER BOOKING - USER
-export const getUserBookings = async (req, res, next) => {
-
-    const userId = req.params.userid;
-
-    try {
-        const user = await User.findOne({ _id: userId }).populate("bookings");
-
-        const bookingList = await Promise.all(
-            user.bookings.map((booking) => {
-                return Booking.findById(booking)
-                    .populate({
-                        path: "hotel",
-                        select: ["name", "type", "city", "photos"],
-                    })
-                    .populate({
-                        path: "rooms",
-                        select: ["name", "type"],
-                    });
-            })
-        );
-
-        const dataBooking = bookingList.map((bookingMember) => {
-            const {hotel, rooms, ...otherDetails} = bookingMember._doc;
-
-            const roomName = rooms.map(({ name }) => name);
-            const roomType = rooms.map(({ type }) => type);
-
-            return {
-                ...otherDetails,
-                hotelName: hotel.name,
-                hotelType: hotel.type,
-                hotelCity: hotel.city,
-                hotelPhotos: hotel.photos,
-                roomName: roomName,
-                roomType: roomType,
-            }
-        })
-
-        res.status(200).json(dataBooking);
-    } catch (err) {
-        next(err);
-    }
-}
-
-// GET ALL BOOKING - ADMIN
+// GET ALL BOOKING
 export const getAllBookings = async (req, res, next) => {
 
     try {
@@ -142,29 +143,42 @@ export const getAllBookings = async (req, res, next) => {
                 select: ["name", "type", "city", "photos"]
             })
             .populate({
-                path: "rooms",
-                select: ["name", "type"]
+                path: "rooms.room",
+                select: ["name", "type", "quantity"]
             });
+
+        if (!bookings) {
+            throw createError(404, "Can't find booking data!");
+        }
 
         // Duyệt qua từng đối tượng booking sau khi truy vấn thành công. Với mỗi đối tượng tiến hành trích xuất dữ liệu như sau:
         // Biến bookingDatas chứa dữ liệu sau khi trả về.
         const bookingDatas = bookings.map((booking) => {
 
             // Duyệt qua từng thuộc tính name và type của đối tượng rooms để lấy dữ liệu và biến nó thành hai mảng: roomName và roomType 
-            const roomName = booking.rooms.map(({ name }) => name);
-            const roomType = booking.rooms.map(({ type }) => type);
+            const roomBookeds = booking.rooms.map((roomBooked) => {
+                return {
+                    roomName: roomBooked.room.name,
+                    roomType: roomBooked.room.type,
+                    quantity: roomBooked.quantity,
+                }
+            });
+
             // Trích xuất hai thuộc tính không cần thiết là hotel và rooms từ booking.
-            const { hotel, rooms, ...otherDetails } = booking._doc;
+            const { _id, hotel, rooms, ...otherDetails } = booking._doc;
 
             // Trả về một đối tượng mới với các thuộc tính có sẵn (trừ hai thuộc tính hotel, rooms) và thêm mới vài thuộc tính.
             return {
+                _id: _id,
+                hotel: {
+                    hotelName: hotel.name,
+                    hotelType: hotel.type,
+                    hotelCity: hotel.city,
+                    hotelPhotos: hotel.photos,
+                },
+                rooms: roomBookeds,
                 ...otherDetails,
-                hotelName: hotel.name,
-                hotelType: hotel.type,
-                hotelCity: hotel.city,
-                hotelPhotos: hotel.photos,
-                roomName: roomName,
-                roomType: roomType,
+
             }
         })
 
