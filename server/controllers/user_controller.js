@@ -133,7 +133,7 @@ export const getUserBookings = async (req, res, next) => {
             })
         );
 
-        if (!userBookings) {
+        if (userBookings.length <= 0) {
             throw createError(404, "Can't find booking data!");
         }
 
@@ -161,7 +161,11 @@ export const getUserBookings = async (req, res, next) => {
             }
         })
 
-        res.status(200).json(bookings);
+        if (bookings.length <= 0) {
+            throw createError(404, "Can't not find data!");
+        }
+
+        res.status(200).json(userBookings);
     } catch (err) {
         next(err);
     }
