@@ -165,7 +165,7 @@ export const getUserBookings = async (req, res, next) => {
             throw createError(404, "Can't not find data!");
         }
 
-        res.status(200).json(userBookings);
+        res.status(200).json(bookings);
     } catch (err) {
         next(err);
     }
