@@ -133,10 +133,6 @@ export const getUserBookings = async (req, res, next) => {
             })
         );
 
-        if (userBookings.length <= 0) {
-            throw createError(404, "Can't find booking data!");
-        }
-
         const bookings = userBookings.map((userBooking) => {
             const { _id, hotel, rooms, ...otherDetails } = userBooking._doc;
 
@@ -160,10 +156,6 @@ export const getUserBookings = async (req, res, next) => {
                 ...otherDetails,
             }
         })
-
-        if (bookings.length <= 0) {
-            throw createError(404, "Can't not find data!");
-        }
 
         res.status(200).json(bookings);
     } catch (err) {
