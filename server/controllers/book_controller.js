@@ -158,8 +158,8 @@ export const getAllBookings = async (req, res, next) => {
             // Duyệt qua từng thuộc tính name và type của đối tượng rooms để lấy dữ liệu và biến nó thành hai mảng: roomName và roomType 
             const roomBookeds = booking.rooms.map((roomBooked) => {
                 return {
-                    roomName: roomBooked.room.name,
-                    roomType: roomBooked.room.type,
+                    name: roomBooked.room.name,
+                    type: roomBooked.room.type,
                     quantity: roomBooked.quantity,
                 }
             });
@@ -171,10 +171,10 @@ export const getAllBookings = async (req, res, next) => {
             return {
                 _id: _id,
                 hotel: {
-                    hotelName: hotel.name,
-                    hotelType: hotel.type,
-                    hotelCity: hotel.city,
-                    hotelPhotos: hotel.photos,
+                    name: hotel.name,
+                    type: hotel.type,
+                    city: hotel.city,
+                    photos: hotel.photos,
                 },
                 rooms: roomBookeds,
                 ...otherDetails,
