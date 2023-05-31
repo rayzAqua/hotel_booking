@@ -13,17 +13,21 @@ export const createRoom = async (req, res, next) => {
     try {
         // Tiến hành lưu đối tượng Room mới vào mongoDB và dữ liệu trả về được lưu vào biến savedRoom
         const savedRoom = await newRoom.save();
-        // Lưu id CỦA Room vừa tạo vào thuộc tính room của Hotel.
-        try {
-            // Truy vấn đến khách sạn cần thêm id của Room bằng id của khách sạn và gọi method push của mongoDB
-            // để đẩy id Room vào thuộc tính mảng rooms.
-            await Hotel.findByIdAndUpdate(
-                hotelid,
-                { $push: { rooms: savedRoom._id } },
-            );
-        } catch (err) {
-            next(err);
+
+        if (!savedRoom) {
+            throw createError(400, "Save room failure!");
         }
+
+        // Lưu id CỦA Room vừa tạo vào thuộc tính room của Hotel..
+        const updateRoomToHotel = await Hotel.findByIdAndUpdate(
+            hotelid,
+            { $push: { rooms: savedRoom._id } },
+        );
+        
+        if (!updateRoomToHotel) {
+            throw createError(400, "Can't not save room to this hotel!");
+        }
+
         // Nếu thành công thì gửi phản hồi về client: Gửi trạng thái 200 và dữ liệu của savedRoom dưới dạng json
         res.status(200).json(savedRoom);
     } catch (err) {
@@ -65,7 +69,7 @@ export const deleteRoom = async (req, res, next) => {
 
         if (!room) {
             throw createError(404, "Can't find this room!");
-        } 
+        }
 
         const deletedRoom = await Room.findByIdAndDelete(req.params.id);
 
@@ -73,17 +77,17 @@ export const deleteRoom = async (req, res, next) => {
             throw createError(400, "Delete room failure!");
         }
 
-        const removeHotelRoom =  await Hotel.findByIdAndUpdate(
-                hotelid,
-                { $pull: { rooms: req.params.id } },
-                {new: true}
-            );
-        
-            if (!removeHotelRoom) {
-                throw createError(400, "Can't not remove room from this hotel!");
-            }
-       
-        res.status(200).json({ 
+        const removeHotelRoom = await Hotel.findByIdAndUpdate(
+            hotelid,
+            { $pull: { rooms: req.params.id } },
+            { new: true }
+        );
+
+        if (!removeHotelRoom) {
+            throw createError(400, "Can't not remove room from this hotel!");
+        }
+
+        res.status(200).json({
             success: true,
             message: "Delete room successfully!",
             deletedRoom: deletedRoom,

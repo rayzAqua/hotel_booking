@@ -13,6 +13,11 @@ export const createHotel = async (req, res, next) => {
     try {
         // Lưu đối tượng đó vào db thông qua Hotel Model
         const savedHotel = await newHotel.save();
+
+        if (!savedHotel) {
+            throw createError(400, "Save hotel failure!");
+        }
+
         // Nếu lưu thành công thì trả về data vừa được lưu
         res.status(200).json(savedHotel);
     } catch (err) {
