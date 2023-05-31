@@ -138,8 +138,8 @@ export const getUserBookings = async (req, res, next) => {
 
             const roomBookeds = rooms.map((roomBooked) => {
                 return {
-                    roomName: roomBooked.room.name,
-                    roomType: roomBooked.room.type,
+                    name: roomBooked.room.name,
+                    type: roomBooked.room.type,
                     quantity: roomBooked.quantity,
                 }
             });
@@ -147,10 +147,10 @@ export const getUserBookings = async (req, res, next) => {
             return {
                 _id: _id,
                 hotel: {
-                    hotelName: hotel.name,
-                    hotelType: hotel.type,
-                    hotelCity: hotel.city,
-                    hotelPhotos: hotel.photos,
+                    name: hotel.name,
+                    type: hotel.type,
+                    city: hotel.city,
+                    photos: hotel.photos,
                 },
                 rooms: roomBookeds,
                 ...otherDetails,
