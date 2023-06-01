@@ -10,4 +10,6 @@ router.post("/register", register);
 // Khi đăng nhập thi gửi dữ liệu về server nên dùng phương thức post
 router.post("/login", login);
 
+// CHANGE PASSWORD
+
 export default router;

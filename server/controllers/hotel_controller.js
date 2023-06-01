@@ -202,67 +202,76 @@ export const countByType = async (req, res, next) => {
 // GET HOTEL ROOMS
 export const getHotelRooms = async (req, res, next) => {
     try {
-        // Truy vấn tới khách sạn theo id khách sạn được gửi từ request
+        // Tìm kiếm khách sạn theo Id
         const hotel = await Hotel.findById(req.params.id);
 
+        // Nếu không tìm được khách sạn thì báo lỗi.
         if (!hotel) {
             throw createError(404, "Can't find this hotel!");
         }
 
-        // Lấy ra một mảng tất cả các phòng của khách sạn vừa được truy vấn.
+        // Lấy ra một mảng tất cả các phòng của khách sạn trên.
         const hotelRooms = await Promise.all(
             hotel.rooms.map(async (room) => {
                 return await Room.findById(room);
             })
         );
 
-        // Xử lý thêm nếu phòng = 0 thì trả về gì đó để vô hiệu hoá hoặc booking đến enddate thì cập nhật lại số lượng phòng như cũ
+        // Nếu khách sạn không có phòng nào thì báo lỗi.
+        if (hotelRooms.length <= 0) {
+            throw createError(404, "This hotel hasn't any room!");
+        }
 
-        // Để thực hiện việc reset lại số lượng phòng thì cần phải load lại dữ liệu mỗi khi load lại api get room hotels
-
-        // Để cập nhật lại số phòng thì cần phải lấy được tất cả các đơn booking đã hết hạn.
-        // Kiểm tra từng phòng của đơn booking với phòng của khách sạn.
-        // Nếu đúng phòng trong đơn booking đúng là phòng của khách sạn thì tính toán lại số lượng phòng và cập nhật lại vào db.
-
-        // Lấy ra tất cả các booking đã hết hạn
-        // Nếu lấy ra theo cách này thì những mảng đã được tính rồi cũng sẽ được lấy lại để tính lại.
+        // Lấy ra các đơn đặt phòng đã hết hạn và có trạng thái isExpires = false,
         const currentDate = new Date();
         const getAllBookingExpires = await Booking.find({
             endDate: { $lt: currentDate },
             isExpires: false,
         });
 
-        const getAllBookingExpiresRoom = getAllBookingExpires.map((bookingExpires) => {
-            return bookingExpires.rooms;
-        });
+        // Đặt lại giá trị isExpires của các đơn đặt trên thành true để biểu đạt các đơn đặt này đã hết hạn và đã được kiểm tra. 
+        await Promise.all(getAllBookingExpires.map(async (bookingExpires) => {
+            await Booking.findByIdAndUpdate(
+                bookingExpires._id,
+                { $set: { isExpires: true } }
+            );
+        }));
 
-        getAllBookingExpires.map(async (bookExpires) => {
-            await Booking.findByIdAndUpdate(bookExpires._id, { $set: { isExpires: true } });
-        });
+        // Lấy ra các mảng phòng trong các đơn đặt đã hết hạn và gộp chúng thành một mảng duy nhất.
+        const getBookedRooms = getAllBookingExpires.flatMap(({ rooms }) => rooms);
 
-        const data = [];
-        for (let bookingExpire of getAllBookingExpiresRoom) {
-            for (let room of bookingExpire) {
-                data.push(room);
-            }
-        }
-
-        const returnQuanity = await Promise.all(
+        // Xử lý cập nhật lại số lượng phòng như cũ khi có đơn hết hạn.
+        const updatedNumberRooms = await Promise.all(
             hotelRooms.map(async (hotelRoom) => {
-                const bookedQuantity = await Room.findById(hotelRoom._id);
-                var currentQuantity = bookedQuantity.quantity;
-                for (let item of data) {
-                    if (item.room == hotelRoom._id) {
-                        currentQuantity = currentQuantity + item.quantity;
-                    }
-                }
+                const room = await Room.findById(hotelRoom._id);
+                const currentQuantity = room.quantity + getBookedRooms
+                    .filter(bookedRoom => bookedRoom.room == hotelRoom._id)
+                    .reduce((acc, bookedRoom) => (acc += bookedRoom.quantity), 0);
                 // Lí do khi tất cả mảng trên rỗng mà thằng returnQuantity vẫn trả về được kết quả đúng là do phương thức này.
-                return await Room.findByIdAndUpdate(hotelRoom._id, { $set: { quantity: currentQuantity } }, { new: true });
-
+                const updatedRoom = await Room.findByIdAndUpdate(
+                    hotelRoom._id,
+                    { $set: { quantity: currentQuantity } },
+                    { new: true }
+                );
+                return updatedRoom;
             })
         );
+        
+        // Kiểm tra xem có phòng nào có số lượng là 0 không, nếu có thì phòng đó không khả dụng.
+        const newHotelRooms = updatedNumberRooms.map((room) => {
+            const { _id, createdAt, updatedAt, __v, ...otherDetails } = room._doc;
+            const isAvailable = room.quantity !== 0;
+            return {
+                _id: _id,
+                ...otherDetails,
+                isAvailable: isAvailable,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                __v: __v,
+            };
+        });
 
-        res.status(200).json(returnQuanity);
+        res.status(200).json(newHotelRooms);
     } catch (err) {
         next(err);
     }

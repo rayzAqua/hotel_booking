@@ -29,6 +29,10 @@ const UserSchema = new mongoose.Schema(
         bookings: {
             type: [String],
             ref: "Booking",
+        },
+        verified: {
+            type: Boolean,
+            default: false,
         }
     }, 
     { timestamps: true } // Ngày giờ tạo, cập nhật thông tin
