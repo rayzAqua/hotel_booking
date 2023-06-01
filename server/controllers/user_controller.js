@@ -145,7 +145,7 @@ export const getUserBookings = async (req, res, next) => {
             });
 
             // Tính thời gian lưu trú để tính toán giá tiền.
-            const time = userBooking.endDate.getDay() - userBooking.startDate.getDay();
+            const time = userBooking.endDate.getUTCDate() - userBooking.startDate.getUTCDate();
             // Tính tổng giá tiền của đơn đặt đang được duyệt.
             const totalPrice = rooms.reduce((acc, roomPrice) => acc + (roomPrice.room.price * roomPrice.quantity), 0);
 
@@ -160,7 +160,7 @@ export const getUserBookings = async (req, res, next) => {
                     photos: hotel.photos,
                 },
                 rooms: roomBookeds,
-                totalPrice: totalPrice * time , 
+                totalPrice: totalPrice * time, 
                 ...otherDetails,
             }
         })
