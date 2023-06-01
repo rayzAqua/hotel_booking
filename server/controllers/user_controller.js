@@ -124,11 +124,11 @@ export const getUserBookings = async (req, res, next) => {
                 return Booking.findById(booking)
                     .populate({
                         path: "hotel",
-                        select: ["name", "type", "city", "photos"],
+                        select: ["_id", "name", "type", "city", "address", "photos"],
                     })
                     .populate({
                         path: "rooms.room",
-                        select: ["name", "type", "quantity"],
+                        select: ["name", "type", "price", "quantity"],
                     });
             })
         );
@@ -144,15 +144,23 @@ export const getUserBookings = async (req, res, next) => {
                 }
             });
 
+            // Tính thời gian lưu trú để tính toán giá tiền.
+            const time = userBooking.endDate.getDay() - userBooking.startDate.getDay();
+            // Tính tổng giá tiền của đơn đặt đang được duyệt.
+            const totalPrice = rooms.reduce((acc, roomPrice) => acc + (roomPrice.room.price * roomPrice.quantity), 0);
+
             return {
                 _id: _id,
                 hotel: {
+                    _id: hotel._id,
                     name: hotel.name,
                     type: hotel.type,
                     city: hotel.city,
+                    address: hotel.address,
                     photos: hotel.photos,
                 },
                 rooms: roomBookeds,
+                totalPrice: totalPrice * time , 
                 ...otherDetails,
             }
         })

@@ -101,8 +101,8 @@ export const getBooking = async (req, res, next) => {
         // Trích xuất và định dạng lại thuộc tính của booked room.
         const roomBookeds = booking.rooms.map((roomBooked) => {
             return {
-                roomName: roomBooked.room.name,
-                roomType: roomBooked.room.type,
+                name: roomBooked.room.name,
+                type: roomBooked.room.type,
                 quantity: roomBooked.quantity,
             };
         });
@@ -114,10 +114,10 @@ export const getBooking = async (req, res, next) => {
         const data = {
             _id: _id,
             hotel: {
-                hotelName: hotel.name,
-                hotelType: hotel.type,
-                hotelCity: hotel.city,
-                hotelPhotos: hotel.photos,
+                name: hotel.name,
+                type: hotel.type,
+                city: hotel.city,
+                photos: hotel.photos,
             },
             rooms: roomBookeds,
             ...otherDetails,
