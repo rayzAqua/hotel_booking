@@ -1,5 +1,5 @@
 import express from "express";
-import { login, register } from "../controllers/auth_controller.js";
+import { login, register, verifyAccount } from "../controllers/auth_controller.js";
 
 const router = express.Router();
 
@@ -7,9 +7,9 @@ const router = express.Router();
 router.post("/register", register);
 
 // LOGIN
-// Khi đăng nhập thi gửi dữ liệu về server nên dùng phương thức post
 router.post("/login", login);
 
-// CHANGE PASSWORD
+// VERIFIED ACCOUNT
+router.get("/:id/verify/:token", verifyAccount);
 
 export default router;

@@ -2,6 +2,12 @@ import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import { createError } from "../utils/error.js"
 import jwt from "jsonwebtoken";
+import crypto from "crypto";
+import Token from "../models/Token.js";
+import { sendEmail } from "../utils/sendEmail.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 // REGISTER
 export const register = async (req, res, next) => {
@@ -20,14 +26,30 @@ export const register = async (req, res, next) => {
         });
 
         const createdUser = await newUser.save();
-        
+
         if (!createdUser) {
             throw createError(400, "Register failure!");
         }
 
+        // Gửi email xác thực tài khoản.
+        // Tạo một token để xác thực tài khoản.
+        const newToken = new Token({
+            userId: createdUser._id,
+            token: crypto.randomBytes(32).toString("hex"),
+        });
+
+        // Lưu token xác thực vào db.
+        const savedToken = await newToken.save();
+
+        // Tạo một đường link để xác thực tài khoản.
+        const url = `${process.env.BASE_URL}/api/auth/${createdUser._id}/verify/${savedToken.token}`;
+
+        // Gửi đi email kèm đường link xác thực trên.
+        await sendEmail(createdUser.email, url);
+
         res.status(200).json({
             success: true,
-            message: "Create user successful!",
+            message: "An Email sent to your account please verify!",
         });
     } catch (err) {
         next(err);
@@ -46,7 +68,26 @@ export const login = async (req, res, next) => {
         // Điều này khiến cho đoạn mã bị sai.
         const passwordCorrect = await bcrypt.compare(req.body.password, user.password);
         if (!passwordCorrect) return next(createError(400, "Wrong password or username!"));
-        
+
+        if (!user.verified) {
+            // Kiểm tra xem user này đã có token xác thực chưa
+            const token = await Token.findOne({ userId: user._id });
+            // Nếu token không tồn tại thì tạo mới.
+            if (!token) {
+                const newToken = new Token({
+                    userId: user._id,
+                    token: crypto.randomBytes(32).toString("hex"),
+                });
+                const savedToken = await newToken.save();
+                const url = `${process.env.BASE_URL}/api/auth/${user._id}/verify/${savedToken.token}`;
+                await sendEmail(user.email, url);
+            }
+
+            return res.status(400).json({
+                success: false,
+                message: "An Email sent to your account please verify!"
+            });
+        }
         //JSON web token:
         // Tạo ra một chuỗi token, chuỗi này chứa các thông tin quan trọng được gửi đi từ server dành cho việc xác minh
         // user và phân quyền cho user đó. Chuỗi này được tạo ra bằng cách sử dụng hàm sign để mã hoá các thông tin gửi
@@ -69,3 +110,55 @@ export const login = async (req, res, next) => {
         next(err);
     }
 }
+
+// VERIFY ACCOUNT
+export const verifyAccount = async (req, res, next) => {
+    const userId = req.params.id;
+    const verifyToken = req.params.token;
+
+    console.log("Ok!");
+
+    try {
+        // Kiểm tra xem user vừa được tạo có tồn tại không.
+        const user = await User.findById(userId);
+        if (!user) {
+            throw createError(404, "Can't find this user!");
+        }
+
+        // Kiểm tra xem token thuộc user này có tồn tại không.
+        const token = await Token.findOne({
+            userId: user._id,
+            token: verifyToken
+        });
+        if (!token) {
+            throw createError(400, "Invalid link!");
+        }
+
+        // Cập nhật lại là đã xác thực
+        await User.findByIdAndUpdate(
+            user._id,
+            { $set: { verified: true } }
+        );
+
+        // Xoá token đã được dùng để xác thực khỏi CSDL
+        await Token.deleteOne({
+            userId: token.userId,
+            token: token.token,
+        });
+
+        res.status(200).send(
+            `<html>
+            <head>
+              <title>Account Confirmation</title>
+            </head>
+            <body>
+              <h1>Account Confirmation</h1>
+              <p>Your account has been successfully confirmed.</p>
+              <p>Thank you for verifying your email address.</p>
+            </body>
+            </html>`);
+
+    } catch (err) {
+        next(err);
+    }
+};

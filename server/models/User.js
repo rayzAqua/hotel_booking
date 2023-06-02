@@ -30,6 +30,10 @@ const UserSchema = new mongoose.Schema(
             type: [String],
             ref: "Booking",
         },
+        favorite: {
+            type: [String],
+            ref: "Hotel",
+        },
         verified: {
             type: Boolean,
             default: false,
