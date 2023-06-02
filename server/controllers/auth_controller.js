@@ -99,7 +99,7 @@ export const login = async (req, res, next) => {
         // Lúc này dữ liệu được lấy bởi ...otherDetails sẽ được lưu dưới dạng đối tượng và có thể thực hiện các thao tác xử lý.
         // password được dùng để chứa trường password.
         // isAdmin được dùng để chứa trường isAdmin.
-        const { password, isAdmin, ...otherDetails } = user._doc;
+        const { password, ...otherDetails } = user._doc;
 
         // Phản hồi lần lượt theo các bước sau:
         // - Lưu lại token vào cookie và thực hiện bảo mật cho token bằng cách gọi httpOnly: true (Ngăn chặn client truy cập tới token).
