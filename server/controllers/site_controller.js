@@ -63,10 +63,10 @@ export const removeFavoriteHotel = async (req, res, next) => {
 
         // Kiểm tra xem hotelId có tồn tại trong mảng favorite của user chưa.
         const isExistedHotel = user.favorite.some((hotel) => hotel === hotelId);
-        // Nếu tồn tại thì isExistedHotel = true và báo lỗi!
+        // Nếu tồn tại thì isExistedHotel = true và đc phép xoá!
         console.log(isExistedHotel);
         if (!isExistedHotel) {
-            throw createError(400, "This hotel is existed in favorite!");
+            throw createError(400, "This hotel isn't existed in favorite!");
         }
 
         // Thêm khách sạn có hotelid vào user.
@@ -138,7 +138,7 @@ export const getAllFavoriteHotel = async (req, res, next) => {
         // Nếu tồn tại thì isExistedHotel = true và tìm kiếm hotel đó!
         console.log(isExistedFavoriteHotel);
         if (!isExistedFavoriteHotel) {
-            throw createError(400, "This user haven't any hotel in favorite!");
+            return res.status(404).json(user.favorite);
         }
 
         // Tìm kiếm tất cả khách sạn có trong mảng favorite.

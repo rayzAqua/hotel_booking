@@ -7,30 +7,24 @@ export const userColumns = [
     renderCell: (params) => {
       return (
         <div className="cellWithImg">
-          <img className="cellImg" src={params.row.img || "https://i.ibb.co/MBtjqXQ/no-avatar.gif"} alt="avatar" />
+          <img className="cellImg" src={params.row.image || "https://i.ibb.co/MBtjqXQ/no-avatar.gif"} alt="avatar" />
           {params.row.username}
         </div>
       );
     },
   },
   {
+    field: "username",
+    headerName: "Name",
+    width: 150,
+  },
+  {
     field: "email",
     headerName: "Email",
     width: 230,
   },
-
   {
-    field: "country",
-    headerName: "Country",
-    width: 100,
-  },
-  {
-    field: "city",
-    headerName: "City",
-    width: 100,
-  },
-  {
-    field: "phone",
+    field: "phoneNumber",
     headerName: "Phone",
     width: 100,
   },
