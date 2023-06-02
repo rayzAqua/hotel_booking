@@ -10,19 +10,12 @@ import { userInputs } from "../../formSource.js";
 const Datatable = ({columns}) => {
   const location = useLocation();
   const path = location.pathname.split("/")[1];
-  const [list, setList] = useState();
+  const [list, setList] = useState([]);
   const { data, loading, error } = useFetch(`/${path}`);
-
-  console.log(path);
-  console.log(data);
-  console.log(loading);
-  console.log(error);
-  console.log(list);
 
   useEffect(() => {
     setList(data);
   }, [data]);
-
 
   const handleDelete = async (id) => {
     try {
@@ -63,12 +56,12 @@ const Datatable = ({columns}) => {
       </div>
       <DataGrid
         className="datagrid"
-        rows={userInputs}
+        rows={list}
         columns={columns.concat(actionColumn)}
         pageSize={9}
         rowsPerPageOptions={[9]}
         checkboxSelection
-        getRowId={(row) => row.id}
+        getRowId={(row) => row._id}
       />
     </div>
   );
