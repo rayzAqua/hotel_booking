@@ -67,7 +67,7 @@ export const login = async (req, res, next) => {
         // Chính vì vậy, biến passwordCorrect lúc này có giá trị là một Promise chứ không phải là kết quả của phương thức này.
         // Điều này khiến cho đoạn mã bị sai.
         const passwordCorrect = await bcrypt.compare(req.body.password, user.password);
-        if (!passwordCorrect) return next(createError(400, "Wrong password or username!"));
+        if (!passwordCorrect) return next(createError(401, "Wrong password or username!"));
 
         if (!user.verified) {
             // Kiểm tra xem user này đã có token xác thực chưa
@@ -149,14 +149,53 @@ export const verifyAccount = async (req, res, next) => {
         res.status(200).send(
             `<html>
             <head>
-              <title>Account Confirmation</title>
+                <title>Xác thực tài khoản thành công</title>
+                <style>
+                    body {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        height: 100vh;
+                    }
+            
+                    .container {
+                        width: 400px;
+                        padding: 20px;
+                        border: 1px solid #ccc;
+                        background-color: #f9f9f9;
+                        text-align: center;
+                    }
+            
+                    .success-message {
+                        color: #008000;
+                        font-size: 24px;
+                        font-weight: bold;
+                        margin-bottom: 20px;
+                    }
+            
+                    .check-mark {
+                        display: inline-block;
+                        width: 60px;
+                        height: 60px;
+                        border-radius: 50%;
+                        background-color: #008000;
+                        color: white;
+                        font-size: 36px;
+                        font-weight: bold;
+                        line-height: 60px;
+                        margin-bottom: 20px;
+                    }
+                </style>
             </head>
             <body>
-              <h1>Account Confirmation</h1>
-              <p>Your account has been successfully confirmed.</p>
-              <p>Thank you for verifying your email address.</p>
+                <div class="container">
+                    <span class="check-mark">✓</span>
+                    <h2 class="success-message">Xác thực tài khoản thành công!</h2>
+                    <p>Cảm ơn bạn đã xác thực tài khoản. Bây giờ bạn có thể truy cập vào tài khoản của mình.</p>
+                </div>
             </body>
-            </html>`);
+            </html>`
+        );
 
     } catch (err) {
         next(err);
