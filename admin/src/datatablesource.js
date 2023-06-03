@@ -122,6 +122,17 @@ export const bookingColumns = [
     ),
   },
   {
+    field: "price",
+    headerName: "Price",
+    width: 130,
+    valueGetter: (params) => params.row.totalPrice,
+    renderCell: (params) => (
+      <div style={{ whiteSpace: "pre-line" }}>
+        {parseInt(params.value).toLocaleString("vi-VN")} VNĐ
+      </div>
+    ),
+  },
+  {
     field: "startDate",
     headerName: "Start",
     width: 100,

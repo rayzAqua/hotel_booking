@@ -57,19 +57,21 @@ const Datatable = ({ columns }) => {
     {
       field: "action",
       headerName: "Action",
-      width: 150,
+      width: path !== "bookings" ? 150 : 80,
       renderCell: (params) => {
         return (
           <div className="cellAction">
             <Link to="/users/test" style={{ textDecoration: "none" }}>
               <div className="viewButton">View</div>
             </Link>
-            <div
-              className="deleteButton"
-              onClick={() => handleDelete(params.row._id)}
-            >
-              Delete
-            </div>
+            {path !== "bookings" && (
+              <div
+                className="deleteButton"
+                onClick={() => handleDelete(params.row._id)}
+              >
+                Delete
+              </div>
+            )}
           </div>
         );
       },
@@ -96,5 +98,7 @@ const Datatable = ({ columns }) => {
     </div>
   );
 };
+
+
 
 export default Datatable;

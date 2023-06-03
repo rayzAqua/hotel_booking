@@ -153,7 +153,10 @@ export const getAllBookings = async (req, res, next) => {
 
         // Duyệt qua từng đối tượng booking sau khi truy vấn thành công. Với mỗi đối tượng tiến hành trích xuất dữ liệu như sau:
         // Biến bookingDatas chứa dữ liệu sau khi trả về.
-        const bookingDatas = bookings.map((booking) => {
+        const bookingDatas = await Promise.all(bookings.map(async (booking) => {
+
+            // Tìm kiếm User có booking = booking._id
+            const user = await User.findOne({ bookings: { $in: [booking._id] } });
 
             // Duyệt qua từng thuộc tính name và type của đối tượng rooms để lấy dữ liệu và biến nó thành hai mảng: roomName và roomType 
             const roomBookeds = booking.rooms.map((roomBooked) => {
@@ -175,6 +178,10 @@ export const getAllBookings = async (req, res, next) => {
             // Trả về một đối tượng mới với các thuộc tính có sẵn (trừ hai thuộc tính hotel, rooms) và thêm mới vài thuộc tính.
             return {
                 _id: _id,
+                user: {
+                    name: user.username,
+                    image: user.image,
+                },
                 hotel: {
                     name: hotel.name,
                     type: hotel.type,
@@ -182,11 +189,10 @@ export const getAllBookings = async (req, res, next) => {
                     photos: hotel.photos,
                 },
                 rooms: roomBookeds,
-                totalPrice: totalPrice * time, 
+                totalPrice: totalPrice * time,
                 ...otherDetails,
-
             }
-        })
+        }));
 
         res.status(200).json(bookingDatas);
     } catch (err) {
