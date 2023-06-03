@@ -1,9 +1,9 @@
 export const userColumns = [
-  { field: "_id", headerName: "ID", width: 70 },
+  { field: "_id", headerName: "ID", width: 230 },
   {
     field: "user",
     headerName: "User",
-    width: 230,
+    width: 200,
     renderCell: (params) => {
       return (
         <div className="cellWithImg">
@@ -26,16 +26,16 @@ export const userColumns = [
   {
     field: "phoneNumber",
     headerName: "Phone",
-    width: 100,
+    width: 150,
   },
 ];
 
 export const hotelColumns = [
-  { field: "_id", headerName: "ID", width: 250 },
+  { field: "_id", headerName: "ID", width: 230 },
   {
     field: "name",
     headerName: "Name",
-    width: 150,
+    width: 230,
   },
   {
     field: "type",
@@ -55,15 +55,15 @@ export const hotelColumns = [
 ];
 
 export const roomColumns = [
-  { field: "_id", headerName: "ID", width: 70 },
+  { field: "_id", headerName: "ID", width: 230 },
   {
-    field: "title",
+    field: "name",
     headerName: "Title",
     width: 230,
   },
   {
-    field: "desc",
-    headerName: "Description",
+    field: "type",
+    headerName: "Type",
     width: 200,
   },
   {
@@ -72,8 +72,76 @@ export const roomColumns = [
     width: 100,
   },
   {
-    field: "maxPeople",
+    field: "maxPeoples",
     headerName: "Max People",
     width: 100,
   },
+  {
+    field: "quantity",
+    headerName: "Quantity",
+    width: 100,
+  },
 ];
+
+export const bookingColumns = [
+  { field: "_id", headerName: "ID", width: 230 },
+  {
+    field: "hotel",
+    headerName: "Hotel",
+    width: 210,
+    renderCell: (params) => (
+      <div style={{ whiteSpace: "pre-line" }}>
+        {params.row.hotel.name}
+      </div>
+    ),
+  },
+  {
+    field: "hotel.type",
+    headerName: "Type",
+    width: 90,
+    valueGetter: (params) => params.row.hotel.type,
+  },
+  {
+    field: "rooms",
+    headerName: "Rooms",
+    width: 160,
+    renderCell: (params) => (
+      <div style={{ whiteSpace: "pre-line" }}>
+        {params.row.rooms.map((room) => room.name).join("\n")}
+      </div>
+    ),
+  },
+  {
+    field: "quantity",
+    headerName: "SL",
+    width: 50,
+    renderCell: (params) => (
+      <div style={{ whiteSpace: "pre-line" }}>
+        {params.row.rooms.map((room) => room.quantity).join("\n")}
+      </div>
+    ),
+  },
+  {
+    field: "startDate",
+    headerName: "Start",
+    width: 100,
+    renderCell: (params) => (
+      <div style={{ whiteSpace: "pre-line" }}>
+        <div>{new Date(params.value).toLocaleDateString()}</div>
+        <div>{new Date(params.value).toLocaleTimeString()}</div>
+      </div>
+    ),
+  },
+  {
+    field: "endDate",
+    headerName: "End",
+    width: 100,
+    renderCell: (params) => (
+      <div style={{ whiteSpace: "pre-line" }}>
+        <div>{new Date(params.value).toLocaleDateString()}</div>
+        <div>{new Date(params.value).toLocaleTimeString()}</div>
+      </div>
+    ),
+  },
+];
+

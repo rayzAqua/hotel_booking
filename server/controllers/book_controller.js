@@ -144,7 +144,7 @@ export const getAllBookings = async (req, res, next) => {
             })
             .populate({
                 path: "rooms.room",
-                select: ["name", "type", "quantity"]
+                select: ["name", "type", "price", "quantity"]
             });
 
         if (!bookings) {
@@ -167,6 +167,11 @@ export const getAllBookings = async (req, res, next) => {
             // Trích xuất hai thuộc tính không cần thiết là hotel và rooms từ booking.
             const { _id, hotel, rooms, ...otherDetails } = booking._doc;
 
+            // Tính thời gian lưu trú để tính toán giá tiền.
+            const time = booking.endDate.getUTCDate() - booking.startDate.getUTCDate();
+            // Tính tổng giá tiền của đơn đặt đang được duyệt.
+            const totalPrice = rooms.reduce((acc, roomPrice) => acc + (roomPrice.room.price * roomPrice.quantity), 0);
+
             // Trả về một đối tượng mới với các thuộc tính có sẵn (trừ hai thuộc tính hotel, rooms) và thêm mới vài thuộc tính.
             return {
                 _id: _id,
@@ -177,6 +182,7 @@ export const getAllBookings = async (req, res, next) => {
                     photos: hotel.photos,
                 },
                 rooms: roomBookeds,
+                totalPrice: totalPrice * time, 
                 ...otherDetails,
 
             }
