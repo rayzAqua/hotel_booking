@@ -7,6 +7,7 @@ import useFetch from "../../hooks/useFetch";
 import axios from "axios";
 import { userInputs } from "../../formSource.js";
 import { bookingColumns } from "../../datatablesource.js";
+import Skeleton from "react-loading-skeleton";
 
 const Datatable = ({ columns }) => {
   const location = useLocation();
@@ -15,32 +16,7 @@ const Datatable = ({ columns }) => {
   const { data, loading, error } = useFetch(`/${path}`);
 
   useEffect(() => {
-    if (data) {
-      const updatedData = data.map((item) => {
-        const startDateObject = new Date(item.startDate);
-        const endDateObject = new Date(item.endDate);
-
-        const formatOptions = {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit'
-        };
-
-        const formattedStartDate = startDateObject.toLocaleDateString('en-US', formatOptions);
-        const formattedEndDate = endDateObject.toLocaleDateString('en-US', formatOptions);
-
-        return {
-          ...item,
-          startDate: formattedStartDate,
-          endDate: formattedEndDate,
-        };
-      });
-
-      setList(updatedData);
-    }
+      setList(data); 
   }, [data]);
 
   console.log(path);
@@ -60,9 +36,9 @@ const Datatable = ({ columns }) => {
       width: path !== "bookings" ? 150 : 80,
       renderCell: (params) => {
         return (
-          <div className="cellAction">
-            <Link to="/users/test" style={{ textDecoration: "none" }}>
-              <div className="viewButton">View</div>
+          <div className="cellAction" onClick={() => console.log("Click!")}>
+            <Link to={`/${path}/${params.row._id}`} style={{ textDecoration: "none" }}>
+              <div className="viewButton">Details</div>
             </Link>
             {path !== "bookings" && (
               <div
@@ -81,20 +57,35 @@ const Datatable = ({ columns }) => {
   return (
     <div className="datatable">
       <div className="datatableTitle">
-        {path}
-        <Link to={`/${path}/new`} className="link">
-          Add New
-        </Link>
+        {path.toLocaleUpperCase()}
+        {path !== "bookings" && (
+          <Link to={`/${path}/new`} className="link">
+            Add New
+          </Link>
+        )}
       </div>
-      <DataGrid
-        className="datagrid"
-        rows={list}
-        columns={columns.concat(actionColumn)}
-        pageSize={9}
-        rowsPerPageOptions={[9]}
-        checkboxSelection
-        getRowId={(row) => row._id}
-      />
+      {loading ? (
+        <div className="loading-container">
+          <div className="skeleton-overlay"></div>
+          <div className="skeleton-content">
+            {[...Array(11)].map((_, index) => (
+              <div key={index} className="skeleton-item">
+                <Skeleton height={40} />
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <DataGrid
+          className="datagrid"
+          rows={list}
+          columns={columns.concat(actionColumn)}
+          pageSize={9}
+          rowsPerPageOptions={[9]}
+          checkboxSelection
+          getRowId={(row) => row._id}
+        />
+      )}
     </div>
   );
 };

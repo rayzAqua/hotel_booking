@@ -89,7 +89,7 @@ export const getBooking = async (req, res, next) => {
             })
             .populate({
                 path: "rooms.room",
-                select: ["name", "type", "quantity"]
+                select: ["name", "type", "price", "quantity"]
             });;
 
         // Bắt lỗi không tìm thấy dữ liệu.
@@ -97,6 +97,9 @@ export const getBooking = async (req, res, next) => {
         if (!booking) {
             throw createError(404, "Can't find booking data!");
         }
+
+        // Tìm user là chủ của booking hiện tại.
+        const user = await User.findOne({ bookings: { $in: [booking._id] } });
 
         // Trích xuất và định dạng lại thuộc tính của booked room.
         const roomBookeds = booking.rooms.map((roomBooked) => {
@@ -110,9 +113,19 @@ export const getBooking = async (req, res, next) => {
         // Trích xuất hai trường hotel và rooms để tạo mới output json
         const { _id, hotel, rooms, ...otherDetails } = booking._doc;
 
+        // Tính thời gian lưu trú để tính toán giá tiền.
+        const time = booking.endDate.getUTCDate() - booking.startDate.getUTCDate();
+        // Tính tổng giá tiền của đơn đặt đang được duyệt.
+        const totalPrice = rooms.reduce((acc, roomPrice) => acc + (roomPrice.room.price * roomPrice.quantity), 0);
+
         // Tạo mới một đối tượng json từ các thuộc tính đã được trích xuất ở phía trên.
         const data = {
             _id: _id,
+            user: {
+                name: user.username,
+                email: user.email,
+                image: user.image,
+            },
             hotel: {
                 name: hotel.name,
                 type: hotel.type,
@@ -120,6 +133,7 @@ export const getBooking = async (req, res, next) => {
                 photos: hotel.photos,
             },
             rooms: roomBookeds,
+            totalPrice: totalPrice * time,
             ...otherDetails,
         }
 

@@ -3,8 +3,27 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import Chart from "../../components/chart/Chart";
 import List from "../../components/table/Table";
+import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import useFetch from "../../hooks/useFetch";
+import axios from "axios";
 
 const Single = () => {
+  const location = useLocation();
+  const path = location.pathname.split("/")[1];
+  const id = location.pathname.split("/")[2];
+  const [list, setList] = useState([]);
+  const { data, loading, error } = useFetch(`/${path}/id=${id}`);
+
+  console.log(path);
+  console.log(id);
+
+  useEffect(() => {
+    setList(data);
+  }, [data]);
+
+  console.log(list);
+
   return (
     <div className="single">
       <Sidebar />
@@ -12,7 +31,6 @@ const Single = () => {
         <Navbar />
         <div className="top">
           <div className="left">
-            <div className="editButton">Edit</div>
             <h1 className="title">Information</h1>
             <div className="item">
               <img
@@ -48,8 +66,8 @@ const Single = () => {
           </div>
         </div>
         <div className="bottom">
-        <h1 className="title">Last Transactions</h1>
-          <List/>
+          <h1 className="title">Last Transactions</h1>
+          <List data={list} />
         </div>
       </div>
     </div>

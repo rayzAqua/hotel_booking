@@ -2,8 +2,8 @@ import "./sidebar.scss";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import AssignmentIcon from "@mui/icons-material/Assignment";
-import CreditCardIcon from "@mui/icons-material/CreditCard";
-import StoreIcon from "@mui/icons-material/Store";
+import MeetingRoomIcon from '@mui/icons-material/MeetingRoom';
+import HotelIcon from '@mui/icons-material/Hotel';
 import InsertChartIcon from "@mui/icons-material/InsertChart";
 import SettingsApplicationsIcon from "@mui/icons-material/SettingsApplications";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
@@ -27,7 +27,7 @@ const Sidebar = () => {
       <hr />
       <div className="center">
         <ul>
-          <p className="title">MAIN</p>
+          <p className="title">STATISTICS</p>
           <li>
             <DashboardIcon className="icon" />
             <span>Dashboard</span>
@@ -41,13 +41,13 @@ const Sidebar = () => {
           </Link>
           <Link to="/hotels" style={{ textDecoration: "none" }}>
             <li>
-              <StoreIcon className="icon" />
+              <HotelIcon className="icon" />
               <span>Hotels</span>
             </li>
           </Link>
           <Link to="/rooms" style={{ textDecoration: "none" }}>
             <li>
-              <CreditCardIcon className="icon" />
+              <MeetingRoomIcon className="icon" />
               <span>Rooms</span>
             </li>
           </Link>

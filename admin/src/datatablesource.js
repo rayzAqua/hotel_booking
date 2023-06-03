@@ -4,6 +4,7 @@ export const userColumns = [
     field: "user",
     headerName: "User",
     width: 200,
+    valueGetter: (params) => params.row.username,
     renderCell: (params) => {
       return (
         <div className="cellWithImg">
@@ -14,11 +15,6 @@ export const userColumns = [
     },
   },
   {
-    field: "username",
-    headerName: "Name",
-    width: 150,
-  },
-  {
     field: "email",
     headerName: "Email",
     width: 230,
@@ -26,6 +22,11 @@ export const userColumns = [
   {
     field: "phoneNumber",
     headerName: "Phone",
+    width: 150,
+  },
+  {
+    field: "isAdmin",
+    headerName: "Admin",
     width: 150,
   },
 ];
@@ -58,7 +59,7 @@ export const roomColumns = [
   { field: "_id", headerName: "ID", width: 230 },
   {
     field: "name",
-    headerName: "Title",
+    headerName: "Name",
     width: 230,
   },
   {
@@ -86,12 +87,27 @@ export const roomColumns = [
 export const bookingColumns = [
   { field: "_id", headerName: "ID", width: 230 },
   {
+    field: "user",
+    headerName: "User",
+    width: 150,
+    valueGetter: (params) => params.row.user?.name, 
+    renderCell: (params) => {
+      return (
+        <div className="cellWithImg">
+          <img className="cellImg" src={params.row.user?.image || "https://i.ibb.co/MBtjqXQ/no-avatar.gif"} alt="avatar" />
+          {params.row.user?.name}
+        </div>
+      );
+    },
+  },
+  {
     field: "hotel",
     headerName: "Hotel",
     width: 210,
+    valueGetter: (params) => params.row.hotel?.name,
     renderCell: (params) => (
       <div style={{ whiteSpace: "pre-line" }}>
-        {params.row.hotel.name}
+        {params.row.hotel?.name}
       </div>
     ),
   },
@@ -99,25 +115,55 @@ export const bookingColumns = [
     field: "hotel.type",
     headerName: "Type",
     width: 90,
-    valueGetter: (params) => params.row.hotel.type,
+    valueGetter: (params) => params.row.hotel?.type,
   },
   {
     field: "rooms",
     headerName: "Rooms",
     width: 160,
+    valueGetter: (params) => params.row.rooms ? params.row.rooms.map((room) => room.name) : [],
+    getApplyFilterFn: (filterModel, column) => {
+      const filterValue = filterModel.value?.toLowerCase();
+      return (params) => {
+        const roomNames = params.row.rooms ? params.row.rooms.map((room) => room.name.toLowerCase()) : [];
+        return roomNames.some((name) => name.includes(filterValue));
+      };
+    },
+    sortComparator: (v1, v2, cellParams1, cellParams2) => {
+      const roomNames1 = cellParams1.value;
+      const roomNames2 = cellParams2.value;
+      const sortedNames1 = roomNames1.sort();
+      const sortedNames2 = roomNames2.sort();
+      return sortedNames1.join("").localeCompare(sortedNames2.join(""));
+    },
     renderCell: (params) => (
       <div style={{ whiteSpace: "pre-line" }}>
-        {params.row.rooms.map((room) => room.name).join("\n")}
+        {params.row.rooms ? params.row.rooms.map((room) => room.name).join("\n") : []}
       </div>
     ),
   },
   {
     field: "quantity",
     headerName: "SL",
-    width: 50,
+    width: 80,
+    valueGetter: (params) => params.row.rooms ? params.row.rooms.map((room) => room.quantity) : [],
+    getApplyFilterFn: (filterModel, column) => {
+      const filterValue = filterModel.value;
+      return (params) => {
+        const roomQuantities = params.row.rooms ? params.row.rooms.map((room) => room.quantity) : [];
+        return roomQuantities.some((quantity) => quantity.toString().includes(filterValue));
+      };
+    },
+    sortComparator: (v1, v2, cellParams1, cellParams2) => {
+      const roomQuantities1 = cellParams1.value;
+      const roomQuantities2 = cellParams2.value;
+      const sortedQuantities1 = roomQuantities1.sort((a, b) => a - b);
+      const sortedQuantities2 = roomQuantities2.sort((a, b) => a - b);
+      return sortedQuantities1[0] - sortedQuantities2[0];
+    },
     renderCell: (params) => (
       <div style={{ whiteSpace: "pre-line" }}>
-        {params.row.rooms.map((room) => room.quantity).join("\n")}
+        {params.row.rooms ? params.row.rooms.map((room) => room.quantity).join("\n") : []}
       </div>
     ),
   },
@@ -135,22 +181,20 @@ export const bookingColumns = [
   {
     field: "startDate",
     headerName: "Start",
-    width: 100,
+    width: 150,
     renderCell: (params) => (
       <div style={{ whiteSpace: "pre-line" }}>
-        <div>{new Date(params.value).toLocaleDateString()}</div>
-        <div>{new Date(params.value).toLocaleTimeString()}</div>
+        <div>{new Date(params.value).toLocaleString()}</div>
       </div>
     ),
   },
   {
     field: "endDate",
     headerName: "End",
-    width: 100,
+    width: 150,
     renderCell: (params) => (
       <div style={{ whiteSpace: "pre-line" }}>
-        <div>{new Date(params.value).toLocaleDateString()}</div>
-        <div>{new Date(params.value).toLocaleTimeString()}</div>
+        <div>{new Date(params.value).toLocaleString()}</div>
       </div>
     ),
   },
