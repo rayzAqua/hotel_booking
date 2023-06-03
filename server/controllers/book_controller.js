@@ -141,7 +141,7 @@ export const getBooking = async (req, res, next) => {
         }
 
         // Trả về định dạng output json mới
-        res.status(200).json(booking);
+        res.status(200).json(data);
 
     } catch (err) {
         next(err);
