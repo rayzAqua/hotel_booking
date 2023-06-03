@@ -85,12 +85,12 @@ export const getBooking = async (req, res, next) => {
         const booking = await Booking.findById(req.params.id)
             .populate({
                 path: "hotel",
-                select: ["name", "type", "city", "photos"]
+                select: ["name", "type", "phone", "address", "city", "photos"]
             })
             .populate({
                 path: "rooms.room",
-                select: ["name", "type", "price", "quantity"]
-            });;
+                select: ["name", "type", "price", "quantity", "photos"]
+            });
 
         // Bắt lỗi không tìm thấy dữ liệu.
         // Nếu không tìm thấy dữ liệu thì ném lỗi ra để khối try catch bắt và dừng thực thi hàm này.
@@ -107,6 +107,7 @@ export const getBooking = async (req, res, next) => {
                 name: roomBooked.room.name,
                 type: roomBooked.room.type,
                 quantity: roomBooked.quantity,
+                photos: roomBooked.room.photos,
             };
         });
 
@@ -129,6 +130,8 @@ export const getBooking = async (req, res, next) => {
             hotel: {
                 name: hotel.name,
                 type: hotel.type,
+                phone: hotel.phone, 
+                address: hotel.address,
                 city: hotel.city,
                 photos: hotel.photos,
             },
@@ -138,9 +141,8 @@ export const getBooking = async (req, res, next) => {
         }
 
         // Trả về định dạng output json mới
-        res.status(200).json(data);
+        res.status(200).json(booking);
 
-        // res.status(200).json(booking);
     } catch (err) {
         next(err);
     }

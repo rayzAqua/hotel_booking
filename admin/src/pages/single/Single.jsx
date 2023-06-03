@@ -30,47 +30,81 @@ const Single = () => {
       <div className="singleContainer">
         <Navbar />
         <div className="top">
-          <div className="left">
-            <h1 className="title">Information</h1>
-            <div className="item">
-              <img
-                src="https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260"
-                alt=""
-                className="itemImg"
-              />
-              <div className="details">
-                <h1 className="itemTitle">Jane Doe</h1>
-                <div className="detailItem">
-                  <span className="itemKey">Email:</span>
-                  <span className="itemValue">janedoe@gmail.com</span>
-                </div>
-                <div className="detailItem">
-                  <span className="itemKey">Phone:</span>
-                  <span className="itemValue">+1 2345 67 89</span>
-                </div>
-                <div className="detailItem">
-                  <span className="itemKey">Address:</span>
-                  <span className="itemValue">
-                    Elton St. 234 Garden Yd. NewYork
-                  </span>
-                </div>
-                <div className="detailItem">
-                  <span className="itemKey">Country:</span>
-                  <span className="itemValue">USA</span>
+          {loading ? (
+            <div className="left"> Loading... </div>
+          ) : (
+            <div className="left">
+              <h1 className="title">Information</h1>
+              <div className="item">
+                <img
+                  src={list.user?.image}
+                  alt=""
+                  className="itemImg"
+                />
+                <div className="details">
+                  <h1 className="itemTitle">{list.user?.name}</h1>
+                  <div className="detailItem">
+                    <span className="itemKey">Email:</span>
+                    <span className="itemValue">{list.user?.email}</span>
+                  </div>
+                  {/* <div className="detailItem">
+                    <span className="itemKey">Phone:</span>
+                    <span className="itemValue">+1 2345 67 89</span>
+                  </div>
+                  <div className="detailItem">
+                    <span className="itemKey">Address:</span>
+                    <span className="itemValue">
+                      Elton St. 234 Garden Yd. NewYork
+                    </span>
+                  </div>
+                  <div className="detailItem">
+                    <span className="itemKey">Country:</span>
+                    <span className="itemValue">USA</span>
+                  </div> */}
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="right">
-            <Chart aspect={3 / 1} title="User Spending ( Last 6 Months)" />
-          </div>
+            </div>)}
+          {loading ? (
+            <div className="right"> Loading... </div>
+          ) : (
+            <div className="right">
+              <h1 className="title">Booking</h1>
+              <div className="item1">
+                <img
+                  src={list.hotel?.photos[0]}
+                  alt=""
+                  className="itemImg1"
+                />
+
+                <div className="details1">
+                  <h1 className="itemTitle1">{list.user?.name}</h1>
+                  <div className="detailItem1">
+                    <span className="itemKey1">ID:</span>
+                    <span className="itemValue1">{list._id}</span>
+                  </div>
+                  <div className="detailItem1">
+                    <span className="itemKey1">Address:</span>
+                    <span className="itemValue1">
+                      Elton St. 234 Garden Yd. NewYork
+                    </span>
+                  </div>
+                  <div className="detailItem1">
+                    <span className="itemKey1">Country:</span>
+                    <span className="itemValue1">USA</span>
+                  </div>
+                </div>
+              </div>
+            </div>)}
         </div>
-        <div className="bottom">
-          <h1 className="title">Last Transactions</h1>
-          <List data={list} />
-        </div>
+        {loading ? (
+          <div className="bottom"> Loading... </div>
+        ) : (
+          <div className="bottom">
+            <h1 className="title">Last Transactions</h1>
+            <List data={list} />
+          </div>)}
       </div>
-    </div>
+    </div >
   );
 };
 
