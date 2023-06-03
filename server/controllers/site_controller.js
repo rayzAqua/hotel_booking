@@ -138,7 +138,7 @@ export const getAllFavoriteHotel = async (req, res, next) => {
         // Nếu tồn tại thì isExistedHotel = true và tìm kiếm hotel đó!
         console.log(isExistedFavoriteHotel);
         if (!isExistedFavoriteHotel) {
-            return res.status(404).json(user.favorite);
+            return res.status(200).json(user.favorite);
         }
 
         // Tìm kiếm tất cả khách sạn có trong mảng favorite.
