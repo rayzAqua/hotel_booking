@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:hotel_booking/app/constants/app.colors.dart';
+import 'package:hotel_booking/core/models/model.event.dart';
 
 class EventsItem extends StatelessWidget {
-  EventsItem({super.key, this.onTap});
+  EventsItem({super.key, this.onTap, required this.eventsModel});
 
+  final Event eventsModel;
   final GestureTapCallback? onTap;
 
   @override
@@ -20,6 +23,20 @@ class EventsItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(30),
           child: Stack(
             children: [
+              CachedNetworkImage(
+                imageUrl: eventsModel.image!,
+                imageBuilder: (context, imageProvider) => Container(
+                  height: _height * 205,
+                  width: _width * 375,
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: imageProvider,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+                errorWidget: (context, url, error) => Icon(Icons.error),
+              ),
               Container(
                 height: _height * 205,
                 decoration: BoxDecoration(
@@ -35,17 +52,50 @@ class EventsItem extends StatelessWidget {
                 ),
               ),
               Positioned(
-                left: 10,
-                top: 115,
+                left: 20,
+                top: 100,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Test"
-                    )
+                      eventsModel.eventType!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: _height * 12,
+                      ),
+                    ),
+                    Text(
+                      eventsModel.name!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: _height * 14,
+                      ),
+                    ),
+                    Text(
+                      '${eventsModel.location}, ${eventsModel.date}',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: _height * 12,
+                      ),
+                    ),
+                    Text(
+                      '\$${eventsModel.price.toString()}/people',
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: AppColors.yellowish,
+                        fontSize: _height * 12,
+                      ),
+                    ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),
