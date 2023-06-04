@@ -4,9 +4,7 @@ import 'dart:io';
 import 'package:cookie_jar/cookie_jar.dart';
 import 'package:flutter/material.dart';
 import 'package:hotel_booking/core/api/api.dart';
-import 'package:hotel_booking/core/services/service.authentication.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 final cookieJar = CookieJar();
 
@@ -50,17 +48,16 @@ class AuthenticationNotifier extends ChangeNotifier {
     }
   }
 
-  Future<void> logOut() async {
+  Future logOut() async {
     token = null;
     userId = null;
     username = null;
     userEmail = null;
     userPhone = null;
     userPhoto = null;
-    notifyListeners();
   }
 
-  Future<void> getUserData() async {
+  Future getUserData() async {
     final url = Uri.parse('${Api.BaseApi}/users/id=${userId}');
     final response =
         await http.get(url, headers: {'Cookie': 'access_token=${token}'});
