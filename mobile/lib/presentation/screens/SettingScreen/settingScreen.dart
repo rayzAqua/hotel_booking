@@ -2,10 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hotel_booking/app/constants/app.colors.dart';
 import 'package:hotel_booking/app/routes/app.routes.dart';
-import 'package:hotel_booking/core/models/model.user.dart';
 import 'package:hotel_booking/core/notifiers/authentication_notifier.dart';
 import 'package:hotel_booking/core/notifiers/theme_notifier.dart';
-import 'package:hotel_booking/presentation/screens/FeedbackScreen/feedbackScreen.dart';
 import 'package:hotel_booking/presentation/screens/ProfileScreen/profileScreen.dart';
 import 'package:hotel_booking/presentation/screens/SettingScreen/widgets/iconStyle.dart';
 import 'package:hotel_booking/presentation/screens/SettingScreen/widgets/setting.appbar.dart';
@@ -19,6 +17,7 @@ class SettingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var auth = Provider.of<AuthenticationNotifier>(context, listen: true);
+    Provider.of<AuthenticationNotifier>(context, listen: true).getUserData();
     ThemeNotifier _themeNotifier =
         Provider.of<ThemeNotifier>(context, listen: true);
     var themeFlag = _themeNotifier.darkTheme;

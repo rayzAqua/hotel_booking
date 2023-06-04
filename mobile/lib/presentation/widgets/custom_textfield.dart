@@ -76,7 +76,6 @@ class CustomTextField {
         minLines: minLines,
         maxLines: maxLines,
         controller: textEditingController,
-        
         validator: validator,
         initialValue: initialValue,
         style: kBodyText.copyWith(
@@ -116,8 +115,8 @@ class CustomTextField {
     required bool themeFlag,
     Function(String)? onChanged,
   }) {
-    // final bool isPasswordVisible =
-    //     Provider.of<ObscureText>(context, listen: true).isTrue;
+    final bool isPasswordVisible =
+        Provider.of<ObscureText>(context, listen: true).isTrue;
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 10),
       child: TextFormField(
@@ -133,15 +132,15 @@ class CustomTextField {
         decoration: InputDecoration(
           suffixIcon: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            // child: IconButton(
-            //   splashColor: Colors.transparent,
-            //   highlightColor: Colors.transparent,
-            //   onPressed: onTap,
-            //   icon: Icon(
-            //     isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-            //     color: Colors.grey,
-            //   ),
-            // ),
+            child: IconButton(
+              splashColor: Colors.transparent,
+              highlightColor: Colors.transparent,
+              onPressed: onTap,
+              icon: Icon(
+                isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                color: Colors.grey,
+              ),
+            ),
           ),
           contentPadding: const EdgeInsets.all(20),
           hintText: 'Password',
