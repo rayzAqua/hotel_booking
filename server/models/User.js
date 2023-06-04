@@ -28,6 +28,7 @@ const UserSchema = new mongoose.Schema(
         },
         bookings: {
             type: [String],
+            default: [],
             ref: "Booking",
         },
         favorite: {

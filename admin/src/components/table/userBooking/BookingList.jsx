@@ -77,7 +77,7 @@ const BookingList = ({ bookingList, loading }) => {
                 <TableCell className="tableCell">{row.totalPrice}</TableCell>
                 <TableCell className="tableCell">
                   <span className={`status ${row.isExpires}`}>
-                    {row.isExpires ? "true" : "false"}
+                    {row.isExpires ? "Not Expires" : "Expires"}
                   </span>
                 </TableCell>
               </TableRow>

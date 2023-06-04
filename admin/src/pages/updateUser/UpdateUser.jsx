@@ -49,6 +49,11 @@ const UpdateUser = ({ title }) => {
       label: "Password",
       type: "password",
     },
+    {
+      id: "isAdmin",
+      label: "Admin",
+      type: "text",
+    },
   ];
 
   const handleChange = (e) => {
@@ -57,9 +62,29 @@ const UpdateUser = ({ title }) => {
 
   const handleClick = async (e) => {
     e.preventDefault();
+
+    // Check username field
+    if (info.username && !/^[a-zA-Z0-9\s]+$/.test(info.username)) {
+      alert("Invalid username field. Only alphanumeric characters are allowed.");
+      return;
+    }
+
+    // Check email field
+    if (info.email && !/^[^\s@]+@gmail\.com$/.test(info.email)) {
+      alert("Email must be a valid Gmail address (example@gmail.com).");
+      return;
+    }
+
+    // Check phone field
+    if (info.phoneNumber && !/^\d{10}$/.test(info.phoneNumber)) {
+      alert("Phone number must be 10 digits and contain only digits 0-9.");
+      return;
+    }
+
     const data = new FormData();
     data.append("file", file);
     data.append("upload_preset", "upload");
+
     try {
       let uploadRes;
       if (file) {
@@ -69,18 +94,32 @@ const UpdateUser = ({ title }) => {
         );
       }
 
-      const { url } = uploadRes?.data || list?.image;
+      const { url } = uploadRes?.data || {};
 
       const newUser = {
         ...info,
-        image: url,
+        ...(url && { image: url }),
       };
 
       const updateUser = await axios.put(`/users/${id}`, newUser);
       console.log(updateUser);
       alert("Update successful");
+      window.location.href = "http://localhost:3000/users"
     } catch (err) {
-      console.log(err);
+      if (err.response) {
+        // Phản hồi từ server với mã lỗi
+        console.log(err.response.data);
+        console.log(err.response.status);
+        alert("Failed to create user: " + err.response.data.message);
+      } else if (err.request) {
+        // Yêu cầu đã được gửi nhưng không nhận được phản hồi từ server
+        console.log(err.request);
+        alert("Failed to create user: No response from server");
+      } else {
+        // Có lỗi xảy ra trong quá trình gửi yêu cầu
+        console.log("Error", err.message);
+        alert("Failed to create user: " + err.message);
+      }
     }
   };
 

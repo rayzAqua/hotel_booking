@@ -16,7 +16,7 @@ const Datatable = ({ columns }) => {
   const { data, loading, error } = useFetch(`/${path}`);
 
   useEffect(() => {
-      setList(data); 
+    setList(data);
   }, [data]);
 
   console.log(path);
@@ -27,7 +27,22 @@ const Datatable = ({ columns }) => {
       await axios.delete(`/${path}/${id}`);
       setList(list.filter((item) => item._id !== id));
       alert("Delete successfully!");
-    } catch (err) { }
+    } catch (err) {
+      if (err.response) {
+        // Phản hồi từ server với mã lỗi
+        console.log(err.response.data);
+        console.log(err.response.status);
+        alert("Failed to create user: " + err.response.data.message);
+      } else if (err.request) {
+        // Yêu cầu đã được gửi nhưng không nhận được phản hồi từ server
+        console.log(err.request);
+        alert("Failed to create user: No response from server");
+      } else {
+        // Có lỗi xảy ra trong quá trình gửi yêu cầu
+        console.log("Error", err.message);
+        alert("Failed to create user: " + err.message);
+      }
+    }
   };
 
   const actionColumn = [
