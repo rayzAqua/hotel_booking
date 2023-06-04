@@ -51,6 +51,7 @@ const Datatable = ({ columns }) => {
       const room = list.find((item) => item._id === roomId);
       if (room) {
         combinedArray.push({
+          hotelId: hotel._id,
           hotelName: hotel.name,
           ...room
         });
@@ -62,7 +63,14 @@ const Datatable = ({ columns }) => {
 
   const handleDelete = async (id) => {
     try {
-      await axios.delete(`/${path}/${id}`);
+      if (path === "rooms") {
+        const roomForDelete = combinedArray.find((item) => item._id == id);
+        if (roomForDelete) {
+          await axios.delete(`/${path}/${id}/${roomForDelete.hotelId}`);
+        }
+      } else {
+        await axios.delete(`/${path}/${id}`);
+      }
       setList(list.filter((item) => item._id !== id));
       alert("Delete successfully!");
     } catch (err) {

@@ -3,7 +3,7 @@ import Sidebar from "../../../components/sidebar/Sidebar";
 import Navbar from "../../../components/navbar/Navbar";
 import Chart from "../../../components/chart/Chart";
 import List from "../../../components/table/userBooking/BookingList";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import useFetch from "../../../hooks/useFetch";
 import axios from "axios";
@@ -77,6 +77,9 @@ const Room = () => {
             <div className="left"> Loading... </div>
           ) : (
             <div className="left">
+              <Link to={`/${path}/update/${id}`} style={{ textDecoration: "none" }}>
+                <div className="editButton">Edit</div>
+              </Link>
               <h1 className="title">Room Infomation</h1>
               <div className="item">
                 <img
@@ -85,7 +88,12 @@ const Room = () => {
                   className="itemImg"
                 />
                 <div className="details">
-                  <h1 className="itemTitle">{newRoom?.name}</h1>
+                  <h1 className="itemTitle">
+                    {newRoom?.name}
+                    <span className={`status ${newRoom?.isAvailable}`}>
+                      {newRoom?.isAvailable ? "Available" : "Not Available"}
+                    </span>
+                  </h1>
                   <div className="detailItem">
                     <span className="itemValue">{newRoom?.description}</span>
                   </div>
@@ -153,14 +161,14 @@ const Room = () => {
                 <div className="detailItem2">
                   <span className="itemKey2">Amount:</span>
                   <span className="itemValue2">{newRoom?.quantity}</span>
-                </div>                                                               
-                <div className="detailItem2">
-                  <span className="itemKey2">Create At:</span>
-                  <span className="itemValue2">{formattedCreateDate}</span>
                 </div>
                 <div className="detailItem2">
                   <span className="itemKey2">Price:</span>
                   <span className="itemValue2">{formattedTotalPrice} VNĐ</span>
+                </div>
+                <div className="detailItem2">
+                  <span className="itemKey2">Create At:</span>
+                  <span className="itemValue2">{formattedCreateDate}</span>
                 </div>
               </div>
             </div>
