@@ -144,7 +144,7 @@ export const bookingColumns = [
   },
   {
     field: "quantity",
-    headerName: "SL",
+    headerName: "Amount",
     width: 80,
     valueGetter: (params) => params.row.rooms ? params.row.rooms.map((room) => room.quantity) : [],
     getApplyFilterFn: (filterModel, column) => {

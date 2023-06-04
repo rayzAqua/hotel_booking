@@ -5,7 +5,7 @@ import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUpload
 import { useState } from "react";
 import axios from "axios";
 
-const New = ({ inputs, title }) => {
+const New = ({ title }) => {
   const [file, setFile] = useState("");
   const [info, setInfo] = useState({});
 
@@ -13,25 +13,57 @@ const New = ({ inputs, title }) => {
     setInfo((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
 
+  const userInputs = [
+    {
+      id: "username",
+      label: "Username",
+      type: "text",
+      placeholder: "example",
+    },
+    {
+      id: "email",
+      label: "Email",
+      type: "email",
+      placeholder: "example@gmail.com",
+    },
+    {
+      id: "phoneNumber",
+      label: "Phone",
+      type: "text",
+      placeholder: "0912345678",
+    },
+    {
+      id: "password",
+      label: "Password",
+      type: "password",
+    },
+  ];
+
+
   const handleClick = async (e) => {
     e.preventDefault();
     const data = new FormData();
     data.append("file", file);
     data.append("upload_preset", "upload");
     try {
-      const uploadRes = await axios.post(
-        "https://api.cloudinary.com/v1_1/lamadev/image/upload",
-        data
-      );
+      let uploadRes;
+      if (file) {
+        uploadRes = await axios.post(
+          "https://api.cloudinary.com/v1_1/dojl7z9k8/image/upload",
+          data
+        );
+      }
 
-      const { url } = uploadRes.data;
+      const { url } = uploadRes?.data || {};
 
       const newUser = {
         ...info,
-        img: url,
+        ...(url && { image: url }),
       };
 
-      await axios.post("/auth/register", newUser);
+      const createdUser = await axios.post("/auth/register", newUser);
+      console.log(createdUser);
+      alert("Create User Sucessfully!");
     } catch (err) {
       console.log(err);
     }
@@ -71,7 +103,7 @@ const New = ({ inputs, title }) => {
                 />
               </div>
 
-              {inputs.map((input) => (
+              {userInputs.map((input) => (
                 <div className="formInput" key={input.id}>
                   <label>{input.label}</label>
                   <input

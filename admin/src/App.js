@@ -1,7 +1,8 @@
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import List from "./pages/list/List";
-import Single from "./pages/single/Single";
+import User from "./pages/single/user/User";
+import Booking from "./pages/single/booking/Booking";
 import New from "./pages/new/New";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { productInputs, userInputs } from "./formSource";
@@ -12,7 +13,7 @@ import { AuthContext } from "./context/AuthContext";
 import { hotelColumns, roomColumns, userColumns, bookingColumns } from "./datatablesource";
 import NewHotel from "./pages/newHotel/NewHotel";
 import NewRoom from "./pages/newRoom/NewRoom";
-
+import UpdateUser from "./pages/updateUser/UpdateUser";
 function App() {
   const { darkMode } = useContext(DarkModeContext);
 
@@ -53,7 +54,7 @@ function App() {
                 path=":userId"
                 element={
                   <ProtectedRoute>
-                    <Single />
+                    <User />
                   </ProtectedRoute>
                 }
               />
@@ -61,7 +62,15 @@ function App() {
                 path="new"
                 element={
                   <ProtectedRoute>
-                    <New inputs={userInputs} title="Add New User" />
+                    <New title="Add New User" />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="update/:userId"
+                element={
+                  <ProtectedRoute>
+                    <UpdateUser title="Update User Infomation" />
                   </ProtectedRoute>
                 }
               />
@@ -79,7 +88,7 @@ function App() {
                 path=":hotelId"
                 element={
                   <ProtectedRoute>
-                    <Single />
+                    <Booking />
                   </ProtectedRoute>
                 }
               />
@@ -105,7 +114,7 @@ function App() {
                 path=":roomId"
                 element={
                   <ProtectedRoute>
-                    <Single />
+                    <Booking />
                   </ProtectedRoute>
                 }
               />
@@ -131,7 +140,7 @@ function App() {
                 path=":bookingId"
                 element={
                   <ProtectedRoute>
-                    <Single />
+                    <Booking />
                   </ProtectedRoute>
                 }
               />
