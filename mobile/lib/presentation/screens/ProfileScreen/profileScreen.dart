@@ -6,7 +6,6 @@ import 'package:hotel_booking/app/routes/app.routes.dart';
 import 'package:hotel_booking/core/notifiers/authentication_notifier.dart';
 import 'package:hotel_booking/core/notifiers/theme_notifier.dart';
 import 'package:hotel_booking/core/services/service.authentication.dart';
-import 'package:hotel_booking/core/services/service.photo.dart';
 import 'package:hotel_booking/presentation/screens/SettingScreen/settingScreen.dart';
 import 'package:hotel_booking/presentation/widgets/custom_button.dart';
 import 'package:hotel_booking/presentation/widgets/custom_snackbar.dart';
@@ -40,8 +39,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     ThemeNotifier _themeNotifier =
         Provider.of<ThemeNotifier>(context, listen: true);
-    // PhotoService _photoService =
-    //     Provider.of<PhotoService>(context, listen: true);
     AuthenticationNotifier _auth =
         Provider.of<AuthenticationNotifier>(context, listen: true);
     var themeFlag = _themeNotifier.darkTheme;
@@ -81,17 +78,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             widget.profileTaskArgs!.user_image!,
                           ),
                         ),
-                        // child: _photoService.image == null
-                        //     ? ClipRRect(
-                        //         borderRadius: BorderRadius.circular(50),
-                        //         child: Image.network(
-                        //           widget.profileTaskArgs!.user_image!,
-                        //         ),
-                        //       )
-                        //     : ClipRRect(
-                        //         borderRadius: BorderRadius.circular(50.0),
-                        //         // child: Image.file(File(_photoService.image!.path),
-                        //       ),
                       ),
                       Positioned(
                         child: CircleAvatar(
@@ -103,9 +89,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               color: Colors.blue,
                               size: 18,
                             ),
-                            onPressed: () {
-                              // _photoService.selectFile();
-                            },
+                            onPressed: () {},
                           ),
                         ),
                         top: 115,
@@ -154,71 +138,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           username: userNameController.text,
                           userPhone: userPhoneController.text,
                         );
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //     builder: (context) => SettingScreen(),
-                        //   ),
-                        // );
-                        // LoadingDialog.showLoaderDialog(
-                        //   context: context,
-                        //   themeFlag: themeFlag,
-                        // );
-                        // if (_photoService.image != null) {
-                        //   await _photoService
-                        //       .upload(
-                        //     context: context,
-                        //     userId: _auth.userId!,
-                        //     token: _auth.token!,
-                        //   )
-                        //       .then(
-                        //     (value) async {
-                        //       if (value) {
-                        //         bool isDone = await _auth.updateUserData(
-                        //           username: userNameController.text,
-                        //           userPhone: userPhoneController.text,
-                        //         );
-                        //         if (isDone) {
-                        //           SnackUtil.showSnackBar(
-                        //             context: context,
-                        //             text: 'Success',
-                        //             textColor: AppColors.creamColor,
-                        //             backgroundColor: Colors.green,
-                        //           );
-                        //         } else {
-                        //           SnackUtil.showSnackBar(
-                        //             context: context,
-                        //             text: 'Fail',
-                        //             textColor: AppColors.creamColor,
-                        //             backgroundColor: Colors.red,
-                        //           );
-                        //         }
-                        //       } else {
-                        //         if (_photoService.photo_url == null) {
-                        //           bool isDone = await _auth.updateUserData(
-                        //             username: userNameController.text,
-                        //             userPhone: userPhoneController.text,
-                        //           );
-                        //           if (isDone) {
-                        //             SnackUtil.showSnackBar(
-                        //               context: context,
-                        //               text: 'Success',
-                        //               textColor: AppColors.creamColor,
-                        //               backgroundColor: Colors.green,
-                        //             );
-                        //           } else {
-                        //             SnackUtil.showSnackBar(
-                        //               context: context,
-                        //               text: 'Fail',
-                        //               textColor: AppColors.creamColor,
-                        //               backgroundColor: Colors.red,
-                        //             );
-                        //           }
-                        //         }
-                        //       }
-                        //     },
-                        //   );
-                        // }
                         _auth.getUserData();
                         Navigator.of(context).pop();
                         // Navigator.of(context).pop();

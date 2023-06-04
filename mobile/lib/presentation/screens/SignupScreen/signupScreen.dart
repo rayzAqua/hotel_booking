@@ -3,6 +3,7 @@ import 'package:hotel_booking/app/constants/app.colors.dart';
 import 'package:hotel_booking/app/routes/app.routes.dart';
 import 'package:hotel_booking/core/notifiers/theme_notifier.dart';
 import 'package:hotel_booking/core/services/service.authentication.dart';
+import 'package:hotel_booking/core/utils/obscure_text.dart';
 import 'package:hotel_booking/presentation/screens/LoginScreen/loginScreen.dart';
 import 'package:hotel_booking/presentation/screens/NavigationScreen/navigationScreen.dart';
 import 'package:hotel_booking/presentation/widgets/custom_button.dart';
@@ -100,7 +101,10 @@ class SignUpScreen extends StatelessWidget {
                               context: context,
                               validator: (val) =>
                                   val!.isEmpty ? 'Enter password' : null,
-                              onTap: () {},
+                              onTap: () {
+                                Provider.of<ObscureText>(context, listen: false)
+                                    .toggleObs();
+                              },
                               textEditingController: userPasswordController,
                             ),
                             CustomTextField.customTextField(

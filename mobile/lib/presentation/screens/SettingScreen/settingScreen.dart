@@ -19,6 +19,7 @@ class SettingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var auth = Provider.of<AuthenticationNotifier>(context, listen: true);
+    Provider.of<AuthenticationNotifier>(context, listen: true).getUserData();
     ThemeNotifier _themeNotifier =
         Provider.of<ThemeNotifier>(context, listen: true);
     var themeFlag = _themeNotifier.darkTheme;
