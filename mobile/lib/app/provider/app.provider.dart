@@ -1,5 +1,6 @@
 import 'package:hotel_booking/core/notifiers/authentication_notifier.dart';
 import 'package:hotel_booking/core/notifiers/booking_notifier.dart';
+import 'package:hotel_booking/core/notifiers/event_notifier.dart';
 import 'package:hotel_booking/core/notifiers/favourite_notifier.dart';
 import 'package:hotel_booking/core/notifiers/hotel_notifier.dart';
 import 'package:hotel_booking/core/notifiers/password_notifier.dart';
@@ -19,5 +20,6 @@ class AppProvider {
     ChangeNotifierProvider(create: (_) => PhotoService()),
     ChangeNotifierProvider(create: (_) => BookingNotifier()),
     ChangeNotifierProvider(create: (_) => FavouriteNotifier()),
+    ChangeNotifierProvider(create: (_) => EventsNotifier()),
   ];
 }
