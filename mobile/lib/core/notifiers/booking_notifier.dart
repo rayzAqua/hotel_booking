@@ -26,8 +26,8 @@ class BookingNotifier extends ChangeNotifier {
     }
   }
 
-  String? startDate = '03-June-2023';
-  String? endDate = '03-June-2023';
+  String? startDate = '05-June-2023';
+  String? endDate = '05-June-2023';
 
   void startDateSet({required String createdAt}) {
     startDate = createdAt;

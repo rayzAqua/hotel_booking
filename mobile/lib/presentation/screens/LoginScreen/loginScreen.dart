@@ -4,6 +4,7 @@ import 'package:hotel_booking/app/routes/app.routes.dart';
 import 'package:hotel_booking/core/notifiers/authentication_notifier.dart';
 import 'package:hotel_booking/core/notifiers/theme_notifier.dart';
 import 'package:hotel_booking/core/services/service.authentication.dart';
+import 'package:hotel_booking/core/utils/obscure_text.dart';
 import 'package:hotel_booking/presentation/widgets/custom_button.dart';
 import 'package:hotel_booking/presentation/widgets/custom_snackbar.dart';
 import 'package:hotel_booking/presentation/widgets/custom_styles.dart';
@@ -87,7 +88,10 @@ class LoginScreen extends StatelessWidget {
                               context: context,
                               validator: (val) =>
                                   val!.isEmpty ? 'Enter a password' : null,
-                              onTap: () {},
+                              onTap: () {
+                                Provider.of<ObscureText>(context, listen: false)
+                                    .toggleObs();
+                              },
                               textEditingController: userPasswordController,
                             ),
                           ],

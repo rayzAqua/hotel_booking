@@ -9,6 +9,7 @@ import 'package:hotel_booking/core/notifiers/favourite_notifier.dart';
 import 'package:hotel_booking/core/notifiers/hotel_notifier.dart';
 import 'package:hotel_booking/core/notifiers/sorts_notifier.dart';
 import 'package:hotel_booking/core/notifiers/theme_notifier.dart';
+import 'package:hotel_booking/core/services/service.map.dart';
 import 'package:hotel_booking/presentation/screens/HomeScreen/widgets/events_widget.dart';
 import 'package:hotel_booking/presentation/screens/HomeScreen/widgets/feature_widget.dart';
 import 'package:hotel_booking/presentation/screens/HotelScreen/hotelScreen.dart';
@@ -21,6 +22,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<MapService>(context, listen: false).getCurrentLocation();
     ThemeNotifier _themeNotifier =
         Provider.of<ThemeNotifier>(context, listen: true);
     AuthenticationNotifier _auth =
