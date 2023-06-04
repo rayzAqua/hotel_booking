@@ -11,8 +11,72 @@ const NewHotel = () => {
   const [files, setFiles] = useState("");
   const [info, setInfo] = useState({});
   const [rooms, setRooms] = useState([]);
-
   const { data, loading, error } = useFetch("/rooms");
+
+  console.log(data);
+
+  const hotelInputs = [
+    {
+      id: "name",
+      label: "Name",
+      type: "text",
+      placeholder: "Your Hotel Name",
+    },
+    {
+      id: "address",
+      label: "Address",
+      type: "text",
+      placeholder: "97 Man Thien, Thu Duc",
+    },
+    {
+      id: "city",
+      label: "City",
+      type: "text",
+      placeholder: "New York",
+    },
+    {
+      id: "type",
+      label: "Type",
+      type: "text",
+      placeholder: "Hotel Type",
+    },
+    {
+      id: "phone",
+      label: "Phone",
+      type: "text",
+      placeholder: "0912345678",
+    },
+    {
+      id: "latitude",
+      label: "Latitude",
+      type: "text",
+      placeholder: "10.0000",
+    },
+    {
+      id: "longitude",
+      label: "Longitude",
+      type: "text",
+      placeholder: "10.0000",
+    },
+    {
+      id: "title",
+      label: "Title",
+      type: "text",
+      placeholder: "Your hotel star",
+    },
+    {
+      id: "description",
+      label: "Description",
+      type: "text",
+      placeholder: "description",
+    },
+    {
+      id: "cheapestPrice",
+      label: "Price",
+      type: "text",
+      placeholder: "100",
+    },
+  ];
 
   const handleChange = (e) => {
     setInfo((prev) => ({ ...prev, [e.target.id]: e.target.value }));
@@ -25,11 +89,12 @@ const NewHotel = () => {
     );
     setRooms(value);
   };
-  
+
   console.log(files)
 
   const handleClick = async (e) => {
     e.preventDefault();
+    
     try {
       const list = await Promise.all(
         Object.values(files).map(async (file) => {
@@ -37,7 +102,7 @@ const NewHotel = () => {
           data.append("file", file);
           data.append("upload_preset", "upload");
           const uploadRes = await axios.post(
-            "https://api.cloudinary.com/v1_1/lamadev/image/upload",
+            "https://api.cloudinary.com/v1_1/dojl7z9k8/image/upload",
             data
           );
 
@@ -52,8 +117,26 @@ const NewHotel = () => {
         photos: list,
       };
 
-      await axios.post("/hotels", newhotel);
-    } catch (err) {console.log(err)}
+      const createdHotel = await axios.post("/hotels", newhotel);
+      console.log(createdHotel);
+      alert("Create Hotel Successfully!");
+      window.location.href = "http://localhost:3000/hotels"
+    } catch (err) {
+      if (err.response) {
+        // Phản hồi từ server với mã lỗi
+        console.log(err.response.data);
+        console.log(err.response.status);
+        alert("Failed to create user: " + err.response.data.message);
+      } else if (err.request) {
+        // Yêu cầu đã được gửi nhưng không nhận được phản hồi từ server
+        console.log(err.request);
+        alert("Failed to create user: No response from server");
+      } else {
+        // Có lỗi xảy ra trong quá trình gửi yêu cầu
+        console.log("Error", err.message);
+        alert("Failed to create user: " + err.message);
+      }
+    }
   };
   return (
     <div className="new">
@@ -111,13 +194,13 @@ const NewHotel = () => {
                 <label>Rooms</label>
                 <select id="rooms" multiple onChange={handleSelect}>
                   {loading
-                    ? "loading"
+                    ? "loading..."
                     : data &&
-                      data.map((room) => (
-                        <option key={room._id} value={room._id}>
-                          {room.title}
-                        </option>
-                      ))}
+                    data.map((room) => (
+                      <option key={room._id} value={room._id}>
+                        {room.name}
+                      </option>
+                    ))}
                 </select>
               </div>
               <button onClick={handleClick}>Send</button>

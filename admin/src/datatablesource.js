@@ -32,7 +32,7 @@ export const userColumns = [
 ];
 
 export const hotelColumns = [
-  { field: "_id", headerName: "ID", width: 240 },
+  { field: "_id", headerName: "ID", width: 230 },
   {
     field: "name",
     headerName: "Hotel",
@@ -50,7 +50,7 @@ export const hotelColumns = [
   {
     field: "type",
     headerName: "Type",
-    width: 120,
+    width: 110,
   },
   {
     field: "title",
@@ -61,6 +61,12 @@ export const hotelColumns = [
     field: "city",
     headerName: "City",
     width: 120,
+  },
+  {
+    field: "rooms",
+    headerName: "Rooms",
+    width: 120,
+    valueGetter: (params) => params.row.rooms.length,
   },
 ];
 
@@ -99,7 +105,7 @@ export const bookingColumns = [
     field: "user",
     headerName: "User",
     width: 150,
-    valueGetter: (params) => params.row.user?.name, 
+    valueGetter: (params) => params.row.user?.name,
     renderCell: (params) => {
       return (
         <div className="cellWithImg">
