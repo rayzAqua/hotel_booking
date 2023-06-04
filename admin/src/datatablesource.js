@@ -75,21 +75,30 @@ export const roomColumns = [
   {
     field: "name",
     headerName: "Name",
-    width: 230,
+    width: 290,
+    valueGetter: (params) => params.row.name,
+    renderCell: (params) => {
+      return (
+        <div className="cellWithImg">
+          <img className="cellImg1" src={params.row.photos[0] || "https://i.ibb.co/MBtjqXQ/no-avatar.gif"} alt="avatar" />
+          <div className="cellContent">{params.row.name}</div>
+        </div>
+      );
+    },
+  },
+  {
+    field: "hotelName",
+    headerName: "Hotel",
+    width: 300,
   },
   {
     field: "type",
     headerName: "Type",
-    width: 200,
+    width: 150,
   },
   {
     field: "price",
     headerName: "Price",
-    width: 100,
-  },
-  {
-    field: "maxPeoples",
-    headerName: "Max People",
     width: 100,
   },
   {
@@ -118,7 +127,7 @@ export const bookingColumns = [
   {
     field: "hotel",
     headerName: "Hotel",
-    width: 210,
+    width: 300,
     valueGetter: (params) => params.row.hotel?.name,
     renderCell: (params) => (
       <div style={{ whiteSpace: "pre-line" }}>

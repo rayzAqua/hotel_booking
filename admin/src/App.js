@@ -15,6 +15,9 @@ import NewHotel from "./pages/newHotel/NewHotel";
 import NewRoom from "./pages/newRoom/NewRoom";
 import UpdateUser from "./pages/updateUser/UpdateUser";
 import Hotel from "./pages/single/hotel/Hotel";
+import UpdateHotel from "./pages/updateHotel/UpdateHotel";
+import Room from "./pages/single/room/Room";
+
 function App() {
   const { darkMode } = useContext(DarkModeContext);
 
@@ -105,7 +108,7 @@ function App() {
                 path="update/:hotelId"
                 element={
                   <ProtectedRoute>
-                    <UpdateUser title="Update User Infomation" />
+                    <UpdateHotel title="Update Hotel Infomation" />
                   </ProtectedRoute>
                 }
               />
@@ -123,7 +126,7 @@ function App() {
                 path=":roomId"
                 element={
                   <ProtectedRoute>
-                    <Booking />
+                    <Room />
                   </ProtectedRoute>
                 }
               />
@@ -132,6 +135,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <NewRoom />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="update/:roomId"
+                element={
+                  <ProtectedRoute>
+                    <UpdateHotel title="Update Room Infomation" />
                   </ProtectedRoute>
                 }
               />

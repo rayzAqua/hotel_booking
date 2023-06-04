@@ -14,13 +14,51 @@ const Datatable = ({ columns }) => {
   const path = location.pathname.split("/")[1];
   const [list, setList] = useState([]);
   const { data, loading, error } = useFetch(`/${path}`);
-
-  useEffect(() => {
-    setList(data);
-  }, [data]);
+  const [hotelList, setHotelList] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   console.log(path);
   console.log(data);
+
+  useEffect(() => {
+    const fetchHotelList = async () => {
+      try {
+        const response = await axios.get(`/hotels`);
+        setHotelList(response.data);
+        setIsLoading(false);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    setList(data);
+    if (path === "rooms") {
+      fetchHotelList();
+    } else {
+      if (hotelList.length > 0) {
+        setHotelList([]);
+      }
+    }
+  }, [data]);
+
+  console.log(list);
+  console.log(hotelList);
+
+  const combinedArray = [];
+
+  hotelList.forEach((hotel) => {
+    hotel.rooms.forEach((roomId) => {
+      const room = list.find((item) => item._id === roomId);
+      if (room) {
+        combinedArray.push({
+          hotelName: hotel.name,
+          ...room
+        });
+      }
+    });
+  });
+
+  console.log(combinedArray);
 
   const handleDelete = async (id) => {
     try {
@@ -32,15 +70,15 @@ const Datatable = ({ columns }) => {
         // Phản hồi từ server với mã lỗi
         console.log(err.response.data);
         console.log(err.response.status);
-        alert("Failed to create user: " + err.response.data.message);
+        alert("Failed to delete: " + err.response.data.message);
       } else if (err.request) {
         // Yêu cầu đã được gửi nhưng không nhận được phản hồi từ server
         console.log(err.request);
-        alert("Failed to create user: No response from server");
+        alert("Failed to delete: No response from server");
       } else {
         // Có lỗi xảy ra trong quá trình gửi yêu cầu
         console.log("Error", err.message);
-        alert("Failed to create user: " + err.message);
+        alert("Failed to delete: " + err.message);
       }
     }
   };
@@ -70,6 +108,8 @@ const Datatable = ({ columns }) => {
     },
   ];
 
+  const listData = path === "rooms" ? combinedArray : list;
+
   return (
     <div className="datatable">
       <div className="datatableTitle">
@@ -94,7 +134,7 @@ const Datatable = ({ columns }) => {
       ) : (
         <DataGrid
           className="datagrid"
-          rows={list}
+          rows={listData}
           columns={columns.concat(actionColumn)}
           pageSize={9}
           rowsPerPageOptions={[9]}

@@ -11,12 +11,22 @@ import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import SettingsSystemDaydreamOutlinedIcon from "@mui/icons-material/SettingsSystemDaydreamOutlined";
 import PsychologyOutlinedIcon from "@mui/icons-material/PsychologyOutlined";
 import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { DarkModeContext } from "../../context/darkModeContext";
 import { useContext } from "react";
+import { AuthContext } from "../../context/AuthContext";
 
 const Sidebar = () => {
   const { dispatch } = useContext(DarkModeContext);
+  const { user } = useContext(AuthContext);
+  const navigate  = useNavigate();
+  console.log(user);
+
+  const logOut = () => {
+    dispatch({ type: "LOGOUT" });
+    navigate("/login", {replace: true});
+  }
+
   return (
     <div className="sidebar">
       <div className="top">
@@ -62,31 +72,16 @@ const Sidebar = () => {
           <p className="title">USEFUL</p>
           <li>
             <InsertChartIcon className="icon" />
-            <span>Stats</span>
-          </li>
-          <li>
-            <NotificationsNoneIcon className="icon" />
-            <span>Notifications</span>
-          </li>
-          <p className="title">SERVICE</p>
-          <li>
-            <SettingsSystemDaydreamOutlinedIcon className="icon" />
-            <span>System Health</span>
-          </li>
-          <li>
-            <PsychologyOutlinedIcon className="icon" />
-            <span>Logs</span>
-          </li>
-          <li>
-            <SettingsApplicationsIcon className="icon" />
-            <span>Settings</span>
+            <span>Event</span>
           </li>
           <p className="title">USER</p>
-          <li>
-            <AccountCircleOutlinedIcon className="icon" />
-            <span>Profile</span>
-          </li>
-          <li>
+          <Link to={`/users/${user._id}`} style={{ textDecoration: "none" }}>
+            <li>
+              <AccountCircleOutlinedIcon className="icon" />
+              <span>Profile</span>
+            </li>
+          </Link>
+          <li onClick={logOut}>
             <ExitToAppIcon className="icon" />
             <span>Logout</span>
           </li>

@@ -98,7 +98,7 @@ const UpdateUser = ({ title }) => {
 
       const newUser = {
         ...info,
-        ...(url && { image: url }),
+        image: url,
       };
 
       const updateUser = await axios.put(`/users/${id}`, newUser);
@@ -110,15 +110,15 @@ const UpdateUser = ({ title }) => {
         // Phản hồi từ server với mã lỗi
         console.log(err.response.data);
         console.log(err.response.status);
-        alert("Failed to create user: " + err.response.data.message);
+        alert("Failed to update user: " + err.response.data.message);
       } else if (err.request) {
         // Yêu cầu đã được gửi nhưng không nhận được phản hồi từ server
         console.log(err.request);
-        alert("Failed to create user: No response from server");
+        alert("Failed to update user: No response from server");
       } else {
         // Có lỗi xảy ra trong quá trình gửi yêu cầu
         console.log("Error", err.message);
-        alert("Failed to create user: " + err.message);
+        alert("Failed to update user: " + err.message);
       }
     }
   };

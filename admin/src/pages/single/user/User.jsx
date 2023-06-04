@@ -26,9 +26,8 @@ const User = () => {
         const response = await axios.get(`/${path}/all-bookings/${id}`);
         setBookingList(response.data);
         setIsLoading(false);
-      } catch (error) {
-        // Xử lý lỗi nếu có
-        console.log(error);
+      } catch (err) {
+        console.log(err);
       }
     };
 
@@ -68,6 +67,10 @@ const User = () => {
                   <div className="detailItem">
                     <span className="itemKey">Email:</span>
                     <span className="itemValue">{list?.email}</span>
+                  </div>
+                  <div className="detailItem">
+                    <span className="itemKey">Admin:</span>
+                    <span className="itemValue">{list?.isAdmin ? "True" : "False"}</span>
                   </div>
                 </div>
               </div>

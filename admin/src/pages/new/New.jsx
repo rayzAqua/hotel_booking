@@ -99,11 +99,11 @@ const New = ({ title }) => {
         );
       }
 
-      const { url } = uploadRes?.data || {};
+      const { url } = uploadRes?.data;
 
       const newUser = {
         ...info,
-        ...(url && { image: url }),
+        image: url,
       };
 
       const createdUser = await axios.post("/auth/register", newUser);
