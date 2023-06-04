@@ -32,26 +32,35 @@ export const userColumns = [
 ];
 
 export const hotelColumns = [
-  { field: "_id", headerName: "ID", width: 230 },
+  { field: "_id", headerName: "ID", width: 240 },
   {
     field: "name",
-    headerName: "Name",
-    width: 230,
+    headerName: "Hotel",
+    width: 330,
+    valueGetter: (params) => params.row.name,
+    renderCell: (params) => {
+      return (
+        <div className="cellWithImg">
+          <img className="cellImg1" src={params.row.photos[0] || "https://i.ibb.co/MBtjqXQ/no-avatar.gif"} alt="avatar" />
+          <div className="cellContent">{params.row.name}</div>
+        </div>
+      );
+    },
   },
   {
     field: "type",
     headerName: "Type",
-    width: 100,
+    width: 120,
   },
   {
     field: "title",
     headerName: "Title",
-    width: 230,
+    width: 160,
   },
   {
     field: "city",
     headerName: "City",
-    width: 100,
+    width: 120,
   },
 ];
 

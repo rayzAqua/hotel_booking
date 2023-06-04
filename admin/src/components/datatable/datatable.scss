@@ -26,11 +26,21 @@
   .cellWithImg {
     display: flex;
     align-items: center;
+    overflow-wrap: break-word;
+
 
     .cellImg {
       width: 32px;
       height: 32px;
       border-radius: 50%;
+      object-fit: cover;
+      margin-right: 20px;
+    }
+    
+    .cellImg1 {
+      width: 34px;
+      height: 34px;
+      border-radius: 10%;
       object-fit: cover;
       margin-right: 20px;
     }

@@ -282,6 +282,9 @@ export const countHotelRoom = async (req, res, next) => {
 
     try {
         const hotel = await Hotel.findById(req.params.id);
+        if (!hotel) {
+            throw createError(404, "Can't find this hotel!")
+        }
         const roomQuantity = hotel.rooms.length;
         res.status(200).json({ quantity: roomQuantity });
     } catch (err) {
