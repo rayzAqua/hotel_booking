@@ -49,7 +49,7 @@ const Datatable = ({ columns }) => {
     {
       field: "action",
       headerName: "Action",
-      width: path !== "bookings" ? 160 : 80,
+      width: path !== "bookings" ? 150 : 80,
       renderCell: (params) => {
         return (
           <div className="cellAction" onClick={() => console.log("Click!")}>

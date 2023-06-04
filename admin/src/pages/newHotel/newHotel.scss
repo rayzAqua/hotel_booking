@@ -21,11 +21,13 @@
       .left {
         flex: 1;
         text-align: center;
+        justify-content: center;
+        align-self: center;
 
         img {
-          width: 100px;
-          height: 100px;
-          border-radius: 50%;
+          width: 300px;
+          height: 450px;
+          border-radius: 10%;
           object-fit: cover;
         }
       }

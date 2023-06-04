@@ -14,6 +14,7 @@ import { hotelColumns, roomColumns, userColumns, bookingColumns } from "./datata
 import NewHotel from "./pages/newHotel/NewHotel";
 import NewRoom from "./pages/newRoom/NewRoom";
 import UpdateUser from "./pages/updateUser/UpdateUser";
+import Hotel from "./pages/single/hotel/Hotel";
 function App() {
   const { darkMode } = useContext(DarkModeContext);
 
@@ -88,7 +89,7 @@ function App() {
                 path=":hotelId"
                 element={
                   <ProtectedRoute>
-                    <Booking />
+                    <Hotel />
                   </ProtectedRoute>
                 }
               />
@@ -96,7 +97,15 @@ function App() {
                 path="new"
                 element={
                   <ProtectedRoute>
-                    <NewHotel />
+                    <NewHotel title="Add New Hotel" />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="update/:hotelId"
+                element={
+                  <ProtectedRoute>
+                    <UpdateUser title="Update User Infomation" />
                   </ProtectedRoute>
                 }
               />
