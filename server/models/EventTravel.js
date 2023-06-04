@@ -1,9 +1,10 @@
 import mongoose from "mongoose";
 
-const EventSchema = new mongoose.Schema(
+const EventTravelSchema = new mongoose.Schema(
     {
         name: {
             type: String,
+            unique: true,
             required: true,
         },
         eventType: {
@@ -30,4 +31,4 @@ const EventSchema = new mongoose.Schema(
     { timestamps: true }
 );
 
-export default mongoose.model("Event", EventSchema);
+export default mongoose.model("EventTravel", EventTravelSchema);

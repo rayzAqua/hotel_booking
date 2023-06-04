@@ -1,6 +1,8 @@
 import Hotel from "../models/Hotel.js";
 import User from "../models/User.js";
+import EventTravel from "../models/EventTravel.js"
 import { createError } from "../utils/error.js";
+import e from "express";
 
 // ADD FAVORITE HOTEL
 export const addFavoriteHotel = async (req, res, next) => {
@@ -148,6 +150,107 @@ export const getAllFavoriteHotel = async (req, res, next) => {
 
         res.status(200).json(hotels);
 
+    } catch (err) {
+        next(err);
+    }
+};
+
+// CREATE EVENT
+export const createEvent = async (req, res, next) => {
+    const newEvent = new EventTravel(req.body);
+
+    try {
+        const savedEvent = await newEvent.save();
+
+        if (!savedEvent) {
+            throw createError(400, "Create event unsucessfully!");
+        }
+
+        res.status(200).json(savedEvent);
+    } catch (err) {
+        next(err);
+    }
+}
+
+// DELETE EVENT
+export const deleteEvent = async (req, res, next) => {
+    const eventId = req.params.id;
+
+    try {
+        const event = await EventTravel.findById(eventId);
+
+        if (!event) {
+            throw createError(400, "This event is not existed!");
+        }
+
+        const deletedEvent = await EventTravel.findByIdAndDelete(event._id);
+
+        if (!deletedEvent) {
+            throw createError(400, "Delete event failure!");
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Delete hotel succesful!",
+            deletedEvent: deletedEvent,
+        });
+    } catch (err) {
+        next(err);
+    }
+}
+
+// UPDATE EVENT
+export const updateEvent = async (req, res, next) => {
+    const eventId = req.params.id;
+
+    try {
+        const event = await EventTravel.findById(eventId);
+
+        if (!event) {
+            throw createError(400, "This event is not existed!");
+        }
+
+        const updatedEvent = await EventTravel.findByIdAndUpdate(
+            event._id,
+            { $set: req.body },
+            { new: true }
+        );
+
+        if (!updatedEvent) {
+            throw createError(400, "Update event failure!");
+        }
+
+        res.status(200).json(updatedEvent);
+    } catch (err) {
+        next(err);
+    }
+}
+
+// GET ONE EVENT
+export const getEvent = async (req, res, next) => {
+    try {
+        const getEvent = await EventTravel.findById(req.params.id);
+
+        if (!getEvent) {
+            throw createError(404, "Can't find event!");
+        }
+
+        res.status(200).json(getEvent);
+    } catch (err) {
+        next(err);
+    }
+};
+
+// GET ALL EVENT
+export const getEvents = async (req, res, next) => {
+    try {
+        const getEvents = await EventTravel.find();
+
+        if (!getEvents) {
+            throw createError(404, "Can't find events!");
+        }
+
+        res.status(200).json(getEvents);
     } catch (err) {
         next(err);
     }
