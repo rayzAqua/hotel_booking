@@ -55,10 +55,10 @@ const User = () => {
               <Link to={`/${path}/update/${id}`} style={{ textDecoration: "none" }}>
                 <div className="editButton">Edit</div>
               </Link>
-              <h1 className="title">User Infomation</h1>
+              <h1 className="title">User Introdution</h1>
               <div className="item">
                 <img
-                  src={list?.image}
+                  src={list?.image || "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"}
                   alt=""
                   className="itemImg"
                 />
@@ -70,7 +70,9 @@ const User = () => {
                   </div>
                   <div className="detailItem">
                     <span className="itemKey">Admin:</span>
-                    <span className="itemValue">{list?.isAdmin ? "True" : "False"}</span>
+                    <span className={`status ${list?.isAdmin}`}>
+                      {list?.isAdmin ? "True" : "False"}
+                    </span>
                   </div>
                 </div>
               </div>

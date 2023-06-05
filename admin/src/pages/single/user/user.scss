@@ -63,6 +63,24 @@
 
               .itemValue {
                 font-weight: 300;
+
+                .status {
+                  margin-left: 20px;
+                  display: inline-block;
+                  padding: 3px 8px;
+                  border-radius: 5px;
+                  font-size: 12px;
+  
+                  &.true {
+                    color: green;
+                    background-color: rgba(0, 128, 0, 0.151);
+                  }
+  
+                  &.false {
+                    color: rgba(255, 89, 0, 0.612);
+                    background-color: rgba(189, 189, 3, 0.103);
+                  }
+                }
               }
             }
           }

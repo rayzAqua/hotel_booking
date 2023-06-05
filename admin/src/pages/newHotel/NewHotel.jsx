@@ -63,7 +63,7 @@ const NewHotel = () => {
     {
       id: "description",
       label: "Description",
-      type: "text",
+      type: "textarea",
       placeholder: "description",
     },
     {
@@ -123,8 +123,8 @@ const NewHotel = () => {
       return;
     }
 
-    if (!info.type?.match(/^[\w]+$/)) {
-      alert("Invalid input for Type. Only alphanumeric characters are allowed.");
+    if (!info.type?.match(/^[\w\s]+$/)) {
+      alert("Invalid input for Type. Only alphanumeric characters and space are allowed.");
       return;
     }
 
@@ -179,10 +179,17 @@ const NewHotel = () => {
         })
       );
 
-      const newhotel = {
-        ...info,
-        photos: list,
-      };
+      let newhotel;
+      if (list && list.length > 0) {
+        newhotel = {
+          ...info,
+          photos: list,
+        };
+      } else {
+        newhotel = { ...info };
+      }
+
+      console.log(newhotel);
 
       const createdHotel = await axios.post("/hotels", newhotel);
       console.log(createdHotel);
@@ -242,12 +249,20 @@ const NewHotel = () => {
               {hotelInputs.map((input) => (
                 <div className="formInput" key={input.id}>
                   <label>{input.label}</label>
-                  <input
-                    id={input.id}
-                    onChange={handleChange}
-                    type={input.type}
-                    placeholder={input.placeholder}
-                  />
+                  {input.type === "textarea" ? (
+                    <textarea
+                      id={input.id}
+                      placeholder={input.placeholder}
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    <input
+                      id={input.id}
+                      type={input.type}
+                      placeholder={input.placeholder}
+                      onChange={handleChange}
+                    />
+                  )}
                 </div>
               ))}
               <div className="formInput">

@@ -80,10 +80,10 @@ const Room = () => {
               <Link to={`/${path}/update/${id}`} style={{ textDecoration: "none" }}>
                 <div className="editButton">Edit</div>
               </Link>
-              <h1 className="title">Room Infomation</h1>
+              <h1 className="title">Room Introdution</h1>
               <div className="item">
                 <img
-                  src={newRoom?.photos}
+                  src={newRoom?.photos || "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"}
                   alt=""
                   className="itemImg"
                 />
@@ -91,7 +91,7 @@ const Room = () => {
                   <h1 className="itemTitle">
                     {newRoom?.name}
                     <span className={`status ${newRoom?.isAvailable}`}>
-                      {newRoom?.isAvailable ? "Available" : "Not Available"}
+                      {newRoom?.isAvailable ? "Vacant" : "Sold out"}
                     </span>
                   </h1>
                   <div className="detailItem">
@@ -104,7 +104,7 @@ const Room = () => {
             <div className="right"> Loading... </div>
           ) : (
             <div className="right">
-              <h1 className="title">Room Infomation</h1>
+              <h1 className="title">Room Introduction</h1>
               <div className="item1">
                 <div className="details1">
                   <div className="detailItem1">
@@ -164,7 +164,7 @@ const Room = () => {
                 </div>
                 <div className="detailItem2">
                   <span className="itemKey2">Price:</span>
-                  <span className="itemValue2">{formattedTotalPrice} VNĐ</span>
+                  <span className="itemValue2">{formattedTotalPrice} $</span>
                 </div>
                 <div className="detailItem2">
                   <span className="itemKey2">Create At:</span>

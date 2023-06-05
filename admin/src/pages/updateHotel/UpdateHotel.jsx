@@ -25,6 +25,8 @@ const UpdateHotel = ({ title }) => {
 
   console.log(list);
 
+  const formattedTotalPrice = parseInt(list?.cheapestPrice).toLocaleString("en-US");
+
   const hotelInputs = [
     {
       id: "name",
@@ -77,14 +79,14 @@ const UpdateHotel = ({ title }) => {
     {
       id: "description",
       label: "Description",
-      type: "text",
+      type: "textarea",
       placeholder: list?.description,
     },
     {
       id: "cheapestPrice",
       label: "Price",
       type: "text",
-      placeholder: list?.cheapestPrice,
+      placeholder: formattedTotalPrice,
     },
     {
       id: "rating",
@@ -186,7 +188,7 @@ const UpdateHotel = ({ title }) => {
       const updateHotel = await axios.put(`/hotels/${id}`, newhotel);
       console.log(updateHotel);
       alert("Update Hotel Successfully!");
-      window.location.href = "http://localhost:3000/hotels"
+      window.location.href = `http://localhost:3000/hotels/${id}`
     } catch (err) {
       if (err.response) {
         // Phản hồi từ server với mã lỗi
@@ -218,7 +220,7 @@ const UpdateHotel = ({ title }) => {
               src={
                 files
                   ? URL.createObjectURL(files[0]) :
-                  list?.photos ? list.photos[0] :
+                  list?.photos ? list.photos :
                     "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
 
               }
@@ -239,16 +241,23 @@ const UpdateHotel = ({ title }) => {
                   style={{ display: "none" }}
                 />
               </div>
-
               {hotelInputs.map((input) => (
                 <div className="formInput" key={input.id}>
                   <label>{input.label}</label>
-                  <input
-                    id={input.id}
-                    onChange={handleChange}
-                    type={input.type}
-                    placeholder={input.placeholder}
-                  />
+                  {input.type === "textarea" ? (
+                    <textarea
+                      id={input.id}
+                      placeholder={input.placeholder}
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    <input
+                      id={input.id}
+                      type={input.type}
+                      placeholder={input.placeholder}
+                      onChange={handleChange}
+                    />
+                  )}
                 </div>
               ))}
               <div className="formInput">

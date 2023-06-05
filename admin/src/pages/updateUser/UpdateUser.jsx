@@ -81,6 +81,11 @@ const UpdateUser = ({ title }) => {
       return;
     }
 
+    if (info.phoneNumber && (info.isAdmin !== "true" && info.isAdmin !== "false")) {
+      alert("Admin field must have a value of true or false.");
+      return;
+    }
+
     const data = new FormData();
     data.append("file", file);
     data.append("upload_preset", "upload");
@@ -94,17 +99,25 @@ const UpdateUser = ({ title }) => {
         );
       }
 
-      const { url } = uploadRes?.data || {};
+      let newUser;
+      if (uploadRes && uploadRes.data && uploadRes.data.url) {
+        const { url } = uploadRes.data;
+        newUser = {
+          ...info,
+          image: url,
+        };
+      } else {
+        newUser = {
+          ...info,
+        }
+      }
 
-      const newUser = {
-        ...info,
-        image: url,
-      };
+      console.log(newUser);
 
       const updateUser = await axios.put(`/users/${id}`, newUser);
       console.log(updateUser);
       alert("Update successful");
-      window.location.href = "http://localhost:3000/users"
+      window.location.href = `http://localhost:3000/users/${id}`
     } catch (err) {
       if (err.response) {
         // Phản hồi từ server với mã lỗi

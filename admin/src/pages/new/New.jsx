@@ -47,27 +47,31 @@ const New = ({ title }) => {
   const handleClick = async (e) => {
     e.preventDefault();
 
-    // Check username field
-    if (info.username) {
-      if (!/^[a-zA-Z0-9\s]+$/.test(info.username)) {
-        alert("Invalid username field. Only alphanumeric characters are allowed.");
-        return;
-      }
-    } else {
-      alert("Username field cannot be empty.");
+    // Kiểm tra ràng buộc không được bỏ trống
+    if (
+      !info.username || info.username.trim() === "" ||
+      !info.email || info.email.trim() === "" ||
+      !info.password || info.password.trim() === "" ||
+      !info.phoneNumber || info.phoneNumber.trim() === ""
+    ) {
+      alert("Please fill in all required fields.");
       return;
     }
 
-    // Check email field
-    if (info.email) {
-      if (!/^[^\s@]+@gmail\.com$/.test(info.email)) {
-        alert("Email must be a valid Gmail address (example@gmail.com).");
-        return;
-      }
-    } else {
-      alert("Email field cannot be empty.");
+    // Check username field
+
+    if (!/^[a-zA-Z0-9\s]+$/.test(info.username)) {
+      alert("Invalid username field. Only alphanumeric characters are allowed.");
       return;
     }
+
+
+    // Check email field
+    if (!/^[^\s@]+@gmail\.com$/.test(info.email)) {
+      alert("Email must be a valid Gmail address (example@gmail.com).");
+      return;
+    }
+
 
     // Check password field
     if (!info.password || info.password.length === 0) {
@@ -76,13 +80,8 @@ const New = ({ title }) => {
     }
 
     // Check phone field
-    if (info.phoneNumber) {
-      if (!/^\d{10}$/.test(info.phoneNumber)) {
-        alert("Phone number must be 10 digits and contain only digits 0-9.");
-        return;
-      }
-    } else {
-      alert("Phone number field cannot be empty.");
+    if (!/^\d{10}$/.test(info.phoneNumber)) {
+      alert("Phone number must be 10 digits and contain only digits 0-9.");
       return;
     }
 
@@ -99,12 +98,20 @@ const New = ({ title }) => {
         );
       }
 
-      const { url } = uploadRes?.data;
+      let newUser;
+      if (uploadRes && uploadRes.data && uploadRes.data.url) {
+        const { url } = uploadRes.data;
+        newUser = {
+          ...info,
+          image: url,
+        };
+      } else {
+        newUser = {
+          ...info,
+        }
+      }
 
-      const newUser = {
-        ...info,
-        image: url,
-      };
+      console.log(newUser);
 
       const createdUser = await axios.post("/auth/register", newUser);
       console.log(createdUser);

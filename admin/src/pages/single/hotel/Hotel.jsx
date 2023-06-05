@@ -41,6 +41,8 @@ const Hotel = () => {
   console.log(list);
   console.log(roomList);
 
+  const formattedTotalPrice = parseInt(list?.cheapestPrice).toLocaleString("en-US");
+
   return (
     <div className="single">
       <Sidebar />
@@ -54,10 +56,10 @@ const Hotel = () => {
               <Link to={`/${path}/update/${id}`} style={{ textDecoration: "none" }}>
                 <div className="editButton">Edit</div>
               </Link>
-              <h1 className="title">Hotel Infomation</h1>
+              <h1 className="title">Hotel Introdution</h1>
               <div className="item">
                 <img
-                  src={list?.photos && list.photos.length > 0 ? list.photos : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"}
+                  src={list?.photos || "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"}
                   alt=""
                   className="itemImg"
                 />
@@ -102,7 +104,11 @@ const Hotel = () => {
                   </div>
                   <div className="detailItem1">
                     <span className="itemKey1">Rating:</span>
-                    <span className="itemValue1">{list?.rating || "No Rating"}</span>
+                    <span className="itemValue1">{list?.rating}</span>
+                  </div>
+                  <div className="detailItem1">
+                    <span className="itemKey1">Cheapest Price:</span>
+                    <span className="itemValue1">{formattedTotalPrice}</span>
                   </div>
                 </div>
               </div>

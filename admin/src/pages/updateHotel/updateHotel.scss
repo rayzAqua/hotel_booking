@@ -42,10 +42,10 @@
           gap: 30px;
           justify-content: space-between;
 
-          .selectRooms{
+          .selectRooms {
             width: 100%;
 
-            select{
+            select {
               width: 100%;
               padding: 10px;
             }
@@ -66,6 +66,17 @@
 
             input {
               width: 100%;
+              padding: 5px;
+              border: none;
+              border-bottom: 1px solid gray;
+            }
+
+            textarea {
+              min-width: 100%;
+              max-width: 100%;
+              width: 100%;
+              min-height: 50px;
+              max-height: 300px;
               padding: 5px;
               border: none;
               border-bottom: 1px solid gray;
