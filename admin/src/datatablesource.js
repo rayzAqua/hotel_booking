@@ -224,3 +224,35 @@ export const bookingColumns = [
   },
 ];
 
+export const eventColumns = [
+  { field: "_id", headerName: "ID", width: 230 },
+  {
+    field: "name",
+    headerName: "Event",
+    width: 300,
+    valueGetter: (params) => params.row.name,
+    renderCell: (params) => {
+      return (
+        <div className="cellWithImg">
+          <img className="cellImg" src={params.row.image || "https://i.ibb.co/MBtjqXQ/no-avatar.gif"} alt="avatar" />
+          {params.row.name}
+        </div>
+      );
+    },
+  },
+  {
+    field: "eventType",
+    headerName: "Type",
+    width: 130,
+  },
+  {
+    field: "location",
+    headerName: "Location",
+    width: 230,
+  },
+  {
+    field: "price",
+    headerName: "Price",
+    width: 130,
+  },
+];

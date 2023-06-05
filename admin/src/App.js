@@ -10,7 +10,7 @@ import "./style/dark.scss";
 import { useContext } from "react";
 import { DarkModeContext } from "./context/darkModeContext";
 import { AuthContext } from "./context/AuthContext";
-import { hotelColumns, roomColumns, userColumns, bookingColumns } from "./datatablesource";
+import { hotelColumns, roomColumns, userColumns, bookingColumns, eventColumns } from "./datatablesource";
 import NewHotel from "./pages/newHotel/NewHotel";
 import NewRoom from "./pages/newRoom/NewRoom";
 import UpdateUser from "./pages/updateUser/UpdateUser";
@@ -162,6 +162,40 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Booking />
+                  </ProtectedRoute>
+                }
+              />
+            </Route>
+            <Route path="sites">
+              <Route
+                path="event"
+                element={
+                  <ProtectedRoute>
+                    <List columns={eventColumns} />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="event/:eventId"
+                element={
+                  <ProtectedRoute>
+                    <User />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="new"
+                element={
+                  <ProtectedRoute>
+                    <New />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="event/update/:eventId"
+                element={
+                  <ProtectedRoute>
+                    <UpdateUser title="Update Room Infomation" />
                   </ProtectedRoute>
                 }
               />

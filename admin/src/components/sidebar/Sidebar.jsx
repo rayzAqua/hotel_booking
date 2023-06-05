@@ -19,12 +19,12 @@ import { AuthContext } from "../../context/AuthContext";
 const Sidebar = () => {
   const { dispatch } = useContext(DarkModeContext);
   const { user } = useContext(AuthContext);
-  const navigate  = useNavigate();
+  const navigate = useNavigate();
   console.log(user);
 
   const logOut = () => {
     dispatch({ type: "LOGOUT" });
-    navigate("/login", {replace: true});
+    navigate("/login", { replace: true });
   }
 
   return (
@@ -70,10 +70,12 @@ const Sidebar = () => {
             </li>
           </Link>
           <p className="title">USEFUL</p>
-          <li>
-            <InsertChartIcon className="icon" />
-            <span>Event</span>
-          </li>
+          <Link to="/sites/event" style={{ textDecoration: "none" }}>
+            <li>
+              <InsertChartIcon className="icon" />
+              <span>Event</span>
+            </li>
+          </Link>
           <p className="title">USER</p>
           <Link to={`/users/${user._id}`} style={{ textDecoration: "none" }}>
             <li>

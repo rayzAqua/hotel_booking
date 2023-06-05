@@ -12,12 +12,14 @@ import Skeleton from "react-loading-skeleton";
 const Datatable = ({ columns }) => {
   const location = useLocation();
   const path = location.pathname.split("/")[1];
+  const pathEvent = location.pathname.split("/")[2];
+  const apiPath = path === "sites" ? `/${path}/${pathEvent}` : `/${path}`;
   const [list, setList] = useState([]);
-  const { data, loading, error } = useFetch(`/${path}`);
+  const { data, loading, error } = useFetch(apiPath);
   const [hotelList, setHotelList] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  console.log(path);
+  console.log(apiPath);
   console.log(data);
 
   useEffect(() => {
