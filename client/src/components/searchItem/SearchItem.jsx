@@ -1,37 +1,34 @@
+import { Link } from "react-router-dom";
 import "./searchItem.css";
 
-const SearchItem = () => {
+const SearchItem = ({ item }) => {
   return (
     <div className="searchItem">
-      <img
-        src="https://cf.bstatic.com/xdata/images/hotel/square600/261707778.webp?k=fa6b6128468ec15e81f7d076b6f2473fa3a80c255582f155cae35f9edbffdd78&o=&s=1"
-        alt=""
-        className="siImg"
-      />
+      <img src={item.photos[0]} alt="" className="siImg" />
       <div className="siDesc">
-        <h1 className="siTitle">Tower Street Apartments</h1>
-        <span className="siDistance">500m from center</span>
-        <span className="siTaxiOp">Free airport taxi</span>
-        <span className="siSubtitle">
-          Studio Apartment with Air conditioning
-        </span>
-        <span className="siFeatures">
-          Entire studio • 1 bathroom • 21m² 1 full bed
-        </span>
-        <span className="siCancelOp">Free cancellation </span>
+        <h1 className="siTitle">{item.name}</h1>
+        {/* <span className="siDistance">{item.distance}m from center</span> */}
+        <span className="siTaxiOp">Ưu đãi mùa du lịch</span>
+        <span className="siSubtitle">Chỗ nghỉ Du lịch Bền vững</span>
+        <span className="siFeatures">{item.description}</span>
+        <span className="siCancelOp">Miễn phí huỷ phòng</span>
         <span className="siCancelOpSubtitle">
-          You can cancel later, so lock in this great price today!
+          Bạn có thể huỷ sau, nên hãy đặt ngay hôm nay để có giá tốt !
         </span>
       </div>
       <div className="siDetails">
-        <div className="siRating">
-          <span>Excellent</span>
-          <button>8.9</button>
-        </div>
+        {item.rating && (
+          <div className="siRating">
+            <span>{item.rating >= 4.8 ? "Xuất sắc" : "Tốt"}</span>
+            <button>{item.rating}</button>
+          </div>
+        )}
         <div className="siDetailTexts">
-          <span className="siPrice">$112</span>
-          <span className="siTaxOp">Includes taxes and fees</span>
-          <button className="siCheckButton">See availability</button>
+          <span className="siPrice">VND {item.cheapestPrice * 23000}</span>
+          <span className="siTaxOp">Đã bao gồm thuế và phí</span>
+          <Link to={`/hotels/${item._id}`}>
+            <button className="siCheckButton">Xem chỗ trống</button>
+          </Link>
         </div>
       </div>
     </div>
