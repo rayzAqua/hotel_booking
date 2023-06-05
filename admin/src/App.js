@@ -18,7 +18,9 @@ import Hotel from "./pages/single/hotel/Hotel";
 import UpdateHotel from "./pages/updateHotel/UpdateHotel";
 import Room from "./pages/single/room/Room";
 import UpdateRoom from "./pages/updateRoom/UpdateRoom";
-
+import NewEvent from "./pages/newEvent/NewEvent";
+import Event from "./pages/single/event/Event";
+import UpdateEvent from "./pages/updateEvent/UpdateEvent";
 function App() {
   const { darkMode } = useContext(DarkModeContext);
 
@@ -166,9 +168,9 @@ function App() {
                 }
               />
             </Route>
-            <Route path="sites">
+            <Route path="sites/event">
               <Route
-                path="event"
+                index
                 element={
                   <ProtectedRoute>
                     <List columns={eventColumns} />
@@ -176,10 +178,10 @@ function App() {
                 }
               />
               <Route
-                path="event/:eventId"
+                path=":eventId"
                 element={
                   <ProtectedRoute>
-                    <User />
+                    <Event />
                   </ProtectedRoute>
                 }
               />
@@ -187,15 +189,15 @@ function App() {
                 path="new"
                 element={
                   <ProtectedRoute>
-                    <New />
+                    <NewEvent />
                   </ProtectedRoute>
                 }
               />
               <Route
-                path="event/update/:eventId"
+                path="update/:eventId"
                 element={
                   <ProtectedRoute>
-                    <UpdateUser title="Update Room Infomation" />
+                    <UpdateEvent title="Update Event Infomation" />
                   </ProtectedRoute>
                 }
               />

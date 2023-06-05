@@ -1,11 +1,11 @@
-import "./new.scss";
+import "./newEvent.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
 import { useState } from "react";
 import axios from "axios";
 
-const New = ({ title }) => {
+const NewEvent = ({ title }) => {
   const [file, setFile] = useState("");
   const [info, setInfo] = useState({});
 
@@ -13,34 +13,35 @@ const New = ({ title }) => {
     setInfo((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
 
-  const eventInputs = [
+  const userInputs = [
     {
-      id: "username",
-      label: "Username",
+      id: "name",
+      label: "Event",
       type: "text",
       placeholder: "example",
     },
     {
-      id: "email",
-      label: "Email",
-      type: "email",
-      placeholder: "example@gmail.com",
-    },
-    {
-      id: "phoneNumber",
-      label: "Phone",
+      id: "eventType",
+      label: "Type",
       type: "text",
-      placeholder: "0912345678",
+      placeholder: "example",
     },
     {
-      id: "password",
-      label: "Password",
-      type: "password",
-    },
-    {
-      id: "isAdmin",
-      label: "Admin",
+      id: "location",
+      label: "Location",
       type: "text",
+      placeholder: "example",
+    },
+    {
+      id: "date",
+      label: "Date",
+      type: "datetime-local",
+    },
+    {
+      id: "price",
+      label: "Price",
+      type: "text",
+      placeholder: "100",
     },
   ];
 
@@ -49,39 +50,33 @@ const New = ({ title }) => {
 
     // Kiểm tra ràng buộc không được bỏ trống
     if (
-      !info.username || info.username.trim() === "" ||
-      !info.email || info.email.trim() === "" ||
-      !info.password || info.password.trim() === "" ||
-      !info.phoneNumber || info.phoneNumber.trim() === ""
+      !info.name || info.name.trim() === "" ||
+      !info.eventType || info.eventType.trim() === "" ||
+      !info.location || info.location.trim() === "" ||
+      !info.date || info.date.trim() === "" ||
+      !info.price || info.price.trim() ===""
     ) {
       alert("Please fill in all required fields.");
       return;
     }
 
-    // Check username field
-
-    if (!/^[a-zA-Z0-9\s]+$/.test(info.username)) {
-      alert("Invalid username field. Only alphanumeric characters are allowed.");
+    if (!info.name?.match(/^[\w\s&]+$/)) {
+      alert("Invalid input for Name. Only alphanumeric characters, spaces, and '&' are allowed.");
       return;
     }
 
-
-    // Check email field
-    if (!/^[^\s@]+@gmail\.com$/.test(info.email)) {
-      alert("Email must be a valid Gmail address (example@gmail.com).");
+    if (!/^[a-zA-Z0-9\s]+$/.test(info.eventType)) {
+      alert("Invalid eventType field. Only alphanumeric characters are allowed.");
+      return;
+    }
+    
+    if (!info.location?.match(/^[\w,\s]+$/)) {
+      alert("Invalid input for Location. Only alphanumeric characters and ',' are allowed.");
       return;
     }
 
-
-    // Check password field
-    if (!info.password || info.password.length === 0) {
-      alert("Password field cannot be empty.");
-      return;
-    }
-
-    // Check phone field
-    if (!/^\d{10}$/.test(info.phoneNumber)) {
-      alert("Phone number must be 10 digits and contain only digits 0-9.");
+    if (!info.price?.match(/^\d+$/)) {
+      alert("Invalid input for Price. Only numeric characters are allowed.");
       return;
     }
 
@@ -98,44 +93,41 @@ const New = ({ title }) => {
         );
       }
 
-      let newUser;
+      let newEvent;
       if (uploadRes && uploadRes.data && uploadRes.data.url) {
         const { url } = uploadRes.data;
-        newUser = {
+        newEvent = {
           ...info,
           image: url,
         };
       } else {
-        newUser = {
+        newEvent = {
           ...info,
         }
       }
 
-      console.log(newUser);
-
-      const createdUser = await axios.post("/auth/register", newUser);
-      console.log(createdUser);
-      alert("Create User Successfully!");
-      window.location.href = "http://localhost:3000/users"
+      const createdEvent = await axios.post("/sites/event", newEvent);
+      console.log(createdEvent);
+      alert("Create Event Successfully!");
+      window.location.href = "http://localhost:3000/sites/event"
     } catch (err) {
       if (err.response) {
         // Phản hồi từ server với mã lỗi
         console.log(err.response.data);
         console.log(err.response.status);
-        alert("Failed to create user: " + err.response.data.message);
+        alert("Failed to create event: " + err.response.data.message);
       } else if (err.request) {
         // Yêu cầu đã được gửi nhưng không nhận được phản hồi từ server
         console.log(err.request);
-        alert("Failed to create user: No response from server");
+        alert("Failed to create event: No response from server");
       } else {
         // Có lỗi xảy ra trong quá trình gửi yêu cầu
         console.log("Error", err.message);
-        alert("Failed to create user: " + err.message);
+        alert("Failed to create event: " + err.message);
       }
     }
   };
 
-  console.log(info);
   return (
     <div className="new">
       <Sidebar />
@@ -169,7 +161,7 @@ const New = ({ title }) => {
                 />
               </div>
 
-              {eventInputs.map((input) => (
+              {userInputs.map((input) => (
                 <div className="formInput" key={input.id}>
                   <label>{input.label}</label>
                   <input
@@ -189,4 +181,4 @@ const New = ({ title }) => {
   );
 };
 
-export default New;
+export default NewEvent;

@@ -71,7 +71,7 @@ const Datatable = ({ columns }) => {
           await axios.delete(`/${path}/${id}/${roomForDelete.hotelId}`);
         }
       } else {
-        await axios.delete(`/${path}/${id}`);
+        await axios.delete(apiPath.concat(`/${id}`));
       }
       setList(list.filter((item) => item._id !== id));
       alert("Delete successfully!");
@@ -101,7 +101,7 @@ const Datatable = ({ columns }) => {
       renderCell: (params) => {
         return (
           <div className="cellAction" onClick={() => console.log("Click!")}>
-            <Link to={`/${path}/${params.row._id}`} style={{ textDecoration: "none" }}>
+            <Link to={apiPath.concat(`/${params.row._id}`)} style={{ textDecoration: "none" }}>
               <div className="viewButton">Details</div>
             </Link>
             {path !== "bookings" && (
@@ -125,7 +125,7 @@ const Datatable = ({ columns }) => {
       <div className="datatableTitle">
         {path.toLocaleUpperCase()}
         {path !== "bookings" && (
-          <Link to={`/${path}/new`} className="link">
+          <Link to={apiPath.concat(`/new`)} className="link">
             Add New
           </Link>
         )}

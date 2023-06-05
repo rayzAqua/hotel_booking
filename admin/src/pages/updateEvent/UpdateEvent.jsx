@@ -1,13 +1,30 @@
-import "./new.scss";
+import "./updateEvent.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import { useLocation } from "react-router-dom";
+import useFetch from "../../hooks/useFetch";
 
-const New = ({ title }) => {
+const UpdateEvent = ({ title }) => {
+  const location = useLocation();
+  const path = location.pathname.split("/")[1];
+  const pathEvent = location.pathname.split("/")[2];
+  const id = location.pathname.split("/")[4];
   const [file, setFile] = useState("");
   const [info, setInfo] = useState({});
+  const [list, setList] = useState([]);
+  const { data, loading, error } = useFetch(`/${path}/${pathEvent}/id=${id}`);
+
+  console.log(path);
+  console.log(id);
+
+  useEffect(() => {
+    setList(data);
+  }, [data]);
+
+  console.log(list);
 
   const handleChange = (e) => {
     setInfo((prev) => ({ ...prev, [e.target.id]: e.target.value }));
@@ -15,73 +32,56 @@ const New = ({ title }) => {
 
   const eventInputs = [
     {
-      id: "username",
-      label: "Username",
+      id: "name",
+      label: "Event",
       type: "text",
-      placeholder: "example",
+      placeholder: list?.name,
     },
     {
-      id: "email",
-      label: "Email",
-      type: "email",
-      placeholder: "example@gmail.com",
-    },
-    {
-      id: "phoneNumber",
-      label: "Phone",
+      id: "eventType",
+      label: "Type",
       type: "text",
-      placeholder: "0912345678",
+      placeholder: list?.eventType,
     },
     {
-      id: "password",
-      label: "Password",
-      type: "password",
-    },
-    {
-      id: "isAdmin",
-      label: "Admin",
+      id: "location",
+      label: "Location",
       type: "text",
+      placeholder: list?.location,
+    },
+    {
+      id: "date",
+      label: "Date",
+      type: "datetime-local",
+    },
+    {
+      id: "price",
+      label: "Price",
+      type: "text",
+      placeholder: list?.price,
     },
   ];
 
   const handleClick = async (e) => {
     e.preventDefault();
 
-    // Kiểm tra ràng buộc không được bỏ trống
-    if (
-      !info.username || info.username.trim() === "" ||
-      !info.email || info.email.trim() === "" ||
-      !info.password || info.password.trim() === "" ||
-      !info.phoneNumber || info.phoneNumber.trim() === ""
-    ) {
-      alert("Please fill in all required fields.");
+    if (info.name && !info.name?.match(/^[\w\s&]+$/)) {
+      alert("Invalid input for Name. Only alphanumeric characters, spaces, and '&' are allowed.");
       return;
     }
 
-    // Check username field
-
-    if (!/^[a-zA-Z0-9\s]+$/.test(info.username)) {
-      alert("Invalid username field. Only alphanumeric characters are allowed.");
+    if (info.eventType && !/^[a-zA-Z0-9\s]+$/.test(info.eventType)) {
+      alert("Invalid eventType field. Only alphanumeric characters are allowed.");
       return;
     }
 
-
-    // Check email field
-    if (!/^[^\s@]+@gmail\.com$/.test(info.email)) {
-      alert("Email must be a valid Gmail address (example@gmail.com).");
+    if (info.location && !info.location?.match(/^[\w,\s]+$/)) {
+      alert("Invalid input for Location. Only alphanumeric characters and ',' are allowed.");
       return;
     }
 
-
-    // Check password field
-    if (!info.password || info.password.length === 0) {
-      alert("Password field cannot be empty.");
-      return;
-    }
-
-    // Check phone field
-    if (!/^\d{10}$/.test(info.phoneNumber)) {
-      alert("Phone number must be 10 digits and contain only digits 0-9.");
+    if (info.price && !info.price?.match(/^\d+$/)) {
+      alert("Invalid input for Price. Only numeric characters are allowed.");
       return;
     }
 
@@ -98,44 +98,41 @@ const New = ({ title }) => {
         );
       }
 
-      let newUser;
+      let newEvent;
       if (uploadRes && uploadRes.data && uploadRes.data.url) {
         const { url } = uploadRes.data;
-        newUser = {
+        newEvent = {
           ...info,
           image: url,
         };
       } else {
-        newUser = {
+        newEvent = {
           ...info,
         }
       }
 
-      console.log(newUser);
-
-      const createdUser = await axios.post("/auth/register", newUser);
-      console.log(createdUser);
-      alert("Create User Successfully!");
-      window.location.href = "http://localhost:3000/users"
+      const updatedEvent = await axios.put(`/sites/event/${id}`, newEvent);
+      console.log(updatedEvent);
+      alert("Update Event Successfully!");
+      window.location.href = `http://localhost:3000/sites/event/${id}`
     } catch (err) {
       if (err.response) {
         // Phản hồi từ server với mã lỗi
         console.log(err.response.data);
         console.log(err.response.status);
-        alert("Failed to create user: " + err.response.data.message);
+        alert("Failed to create event: " + err.response.data.message);
       } else if (err.request) {
         // Yêu cầu đã được gửi nhưng không nhận được phản hồi từ server
         console.log(err.request);
-        alert("Failed to create user: No response from server");
+        alert("Failed to create event: No response from server");
       } else {
         // Có lỗi xảy ra trong quá trình gửi yêu cầu
         console.log("Error", err.message);
-        alert("Failed to create user: " + err.message);
+        alert("Failed to create event: " + err.message);
       }
     }
   };
 
-  console.log(info);
   return (
     <div className="new">
       <Sidebar />
@@ -148,9 +145,9 @@ const New = ({ title }) => {
           <div className="left">
             <img
               src={
-                file
-                  ? URL.createObjectURL(file)
-                  : "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
+                file ? URL.createObjectURL(file) :
+                  list?.image ? list.image :
+                    "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
               }
               alt=""
             />
@@ -189,4 +186,4 @@ const New = ({ title }) => {
   );
 };
 
-export default New;
+export default UpdateEvent;
