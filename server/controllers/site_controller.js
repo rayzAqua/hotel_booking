@@ -5,7 +5,7 @@ import { createError } from "../utils/error.js";
 
 // ADD FAVORITE HOTEL
 export const addFavoriteHotel = async (req, res, next) => {
-    const userId = req.params.userid;
+    const userId = req.params.id;
     const hotelId = req.params.hotelid;
 
     try {
@@ -51,7 +51,7 @@ export const addFavoriteHotel = async (req, res, next) => {
 
 // REMOVE FAVORITE HOTEL
 export const removeFavoriteHotel = async (req, res, next) => {
-    const userId = req.params.userid;
+    const userId = req.params.id;
     const hotelId = req.params.hotelid;
 
     try {
@@ -94,7 +94,7 @@ export const removeFavoriteHotel = async (req, res, next) => {
 
 // GET ONE FAVORITE HOTEL
 export const getOneFavoriteHotel = async (req, res, next) => {
-    const userId = req.params.userid;
+    const userId = req.params.id;
     const hotelId = req.params.hotelid;
 
     try {
@@ -124,7 +124,7 @@ export const getOneFavoriteHotel = async (req, res, next) => {
 
 // GET ALL FAVORITE HOTEL
 export const getAllFavoriteHotel = async (req, res, next) => {
-    const userId = req.params.userid;
+    const userId = req.params.id;
 
     try {
         // Tìm user có userid.

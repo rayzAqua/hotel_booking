@@ -81,8 +81,8 @@ const BookingList = ({ bookingList, loading }) => {
                 <TableCell className="tableCell">{row.rooms[0].quantity}</TableCell>
                 <TableCell className="tableCell">{formattedTotalPrice(row.totalPrice)} VND</TableCell>
                 <TableCell className="tableCell">
-                  <span className={`status ${row.isExpires}`}>
-                    {row.isExpires ? "Not Expires" : "Expires"}
+                  <span className={`status ${row?.isExpires}`}>
+                    {row?.isExpires ? "Expires" : "Not Expires"}
                   </span>
                 </TableCell>
               </TableRow>
