@@ -6,8 +6,6 @@ const Featured = () => {
   const { data, loading, error } = useFetch(
     "/hotels/countByCity?cities=Hồ Chí Minh,Hà Nội,Đà Nẵng"
   );
-  console.log(data);
-  // const loading = false;
   return (
     <div className="featured">
       {loading ? (
@@ -22,7 +20,7 @@ const Featured = () => {
             />
             <div className="featuredTitles">
               <h1>Hồ Chí Minh</h1>
-              <h2> {data[0].count} chỗ nghỉ</h2>
+              {/* <h2> {data[0].count} chỗ nghỉ</h2> */}
             </div>
           </div>
 
@@ -34,7 +32,7 @@ const Featured = () => {
             />
             <div className="featuredTitles">
               <h1>Hà Nội</h1>
-              <h2>{data[1].count} chỗ nghỉ</h2>
+              {/* <h2> {data[1].count} chỗ nghỉ</h2> */}
             </div>
           </div>
           <div className="featuredItem">
@@ -45,7 +43,7 @@ const Featured = () => {
             />
             <div className="featuredTitles">
               <h1>Đà Nẵng</h1>
-              <h2>{data[2].count} chỗ nghỉ</h2>
+              {/* <h2>{data[2].count} chỗ nghỉ</h2> */}
             </div>
           </div>
         </>
