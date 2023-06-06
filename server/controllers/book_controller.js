@@ -17,10 +17,12 @@ export const createBooking = async (req, res, next) => {
         if (!hotel) {
             throw createError(404, "Can't find data!");
         }
-        const areAllRoomsExist = bookingRooms.every((roomItem) => hotel.rooms.includes(roomItem));
+        const areAllRoomsExist = bookingRooms.every((roomItem) => hotel.rooms.includes(roomItem.room));
         if (!areAllRoomsExist) {
             throw createError(400, "Room is not in hotel");
         }
+        console.log(areAllRoomsExist);
+
         // Xử lý kiểm tra số lượng phòng còn lại trước khi thực hiện booking. Tìm kiếm các phòng được phép đặt, nếu có phòng nào không
         // được phép đặt thì báo lỗi, nếu hợp lệ thì trả về mảng phòng hợp lệ.F
         const validRooms = await Promise.all(
