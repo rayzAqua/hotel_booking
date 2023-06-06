@@ -81,7 +81,7 @@ const UpdateUser = ({ title }) => {
       return;
     }
 
-    if (info.phoneNumber && (info.isAdmin !== "true" && info.isAdmin !== "false")) {
+    if (info.isAdmin && (info.isAdmin !== "true" && info.isAdmin !== "false")) {
       alert("Admin field must have a value of true or false.");
       return;
     }

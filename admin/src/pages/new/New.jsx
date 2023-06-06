@@ -85,6 +85,12 @@ const New = ({ title }) => {
       return;
     }
 
+    
+    if (info.isAdmin && (info.isAdmin !== "true" && info.isAdmin !== "false")) {
+      alert("Admin field must have a value of true or false.");
+      return;
+    }
+
     const data = new FormData();
     data.append("file", file);
     data.append("upload_preset", "upload");
