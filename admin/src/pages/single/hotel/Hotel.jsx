@@ -41,7 +41,7 @@ const Hotel = () => {
   console.log(list);
   console.log(roomList);
 
-  const formattedTotalPrice = parseInt(list?.cheapestPrice).toLocaleString("en-US");
+  const formattedTotalPrice = parseInt(list?.cheapestPrice).toLocaleString("vi-VN");
 
   return (
     <div className="single">
@@ -108,7 +108,7 @@ const Hotel = () => {
                   </div>
                   <div className="detailItem1">
                     <span className="itemKey1">Cheapest Price:</span>
-                    <span className="itemValue1">{formattedTotalPrice}</span>
+                    <span className="itemValue1">{formattedTotalPrice} VND</span>
                   </div>
                 </div>
               </div>

@@ -33,7 +33,7 @@ const Event = () => {
   const formattedCreateDate = createDate?.toLocaleString();
 
   // Format total price
-  const formattedTotalPrice = parseInt(list?.price).toLocaleString("en-US");
+  const formattedTotalPrice = parseInt(list?.price).toLocaleString("vi-VN");
 
   return (
     <div className="single">
@@ -85,7 +85,7 @@ const Event = () => {
                   </div>
                   <div className="detailItem1">
                     <span className="itemKey1">Price:</span>
-                    <span className="itemValue1">{formattedTotalPrice}</span>
+                    <span className="itemValue1">{formattedTotalPrice} VND</span>
                   </div>    
                 </div>
               </div>

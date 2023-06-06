@@ -11,7 +11,7 @@ const BookingList = ({ bookingList, loading }) => {
 
   const formattedTotalPrice = (cheapestPrice) => {
     const newPrice = parseInt(cheapestPrice)
-    return newPrice.toLocaleString("en-US");
+    return newPrice.toLocaleString("vi-VN");
   } 
 
   return (
@@ -79,7 +79,7 @@ const BookingList = ({ bookingList, loading }) => {
                 <TableCell className="tableCell">{row.rooms[0].name}</TableCell>
                 <TableCell className="tableCell">{row.rooms[0].type}</TableCell>
                 <TableCell className="tableCell">{row.rooms[0].quantity}</TableCell>
-                <TableCell className="tableCell">{formattedTotalPrice(row.totalPrice)}</TableCell>
+                <TableCell className="tableCell">{formattedTotalPrice(row.totalPrice)} VND</TableCell>
                 <TableCell className="tableCell">
                   <span className={`status ${row.isExpires}`}>
                     {row.isExpires ? "Not Expires" : "Expires"}

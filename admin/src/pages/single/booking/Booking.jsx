@@ -164,7 +164,7 @@ const Booking = () => {
                 </div>
                 <div className="detailItem2">
                   <span className="itemKey2">Totals:</span>
-                  <span className="itemValue2">{formattedTotalPrice} $</span>
+                  <span className="itemValue2">{formattedTotalPrice} VND</span>
                 </div>
               </div>
             </div>

@@ -99,7 +99,13 @@ export const roomColumns = [
   {
     field: "price",
     headerName: "Price",
-    width: 100,
+    width: 140,
+    valueGetter: (params) => params.row.price,
+    renderCell: (params) => (
+      <div style={{ whiteSpace: "pre-line" }}>
+        {parseInt(params.value).toLocaleString("vi-VN")} VND
+      </div>
+    ),
   },
   {
     field: "quantity",
@@ -198,7 +204,7 @@ export const bookingColumns = [
     valueGetter: (params) => params.row.totalPrice,
     renderCell: (params) => (
       <div style={{ whiteSpace: "pre-line" }}>
-        {parseInt(params.value).toLocaleString("vi-VN")} VNĐ
+        {parseInt(params.value).toLocaleString("vi-VN")} VND
       </div>
     ),
   },
@@ -254,5 +260,11 @@ export const eventColumns = [
     field: "price",
     headerName: "Price",
     width: 130,
+    valueGetter: (params) => params.row.price,
+    renderCell: (params) => (
+      <div style={{ whiteSpace: "pre-line" }}>
+        {parseInt(params.row.price).toLocaleString("vi-VN")} VND
+      </div>
+    ),
   },
 ];

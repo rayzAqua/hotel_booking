@@ -17,7 +17,7 @@ const HotelRoom = ({ roomList, loading }) => {
 
   const formattedTotalPrice = (cheapestPrice) => {
     const newPrice = parseInt(cheapestPrice)
-    return newPrice.toLocaleString("en-US");
+    return newPrice.toLocaleString("vi-VN");
   } 
 
   return (
@@ -81,7 +81,7 @@ const HotelRoom = ({ roomList, loading }) => {
                 <TableCell className="tableCell">{row._id}</TableCell>
                 <TableCell className="tableCell">{row.name}</TableCell>
                 <TableCell className="tableCell">{row.type}</TableCell>
-                <TableCell className="tableCell">{formattedTotalPrice(row.price)}</TableCell>
+                <TableCell className="tableCell">{formattedTotalPrice(row.price)} VND</TableCell>
                 <TableCell className="tableCell">{row.quantity}</TableCell>
                 <TableCell className="tableCell">{formattedCreateDate(row.createdAt)}</TableCell>
                 <TableCell className="tableCell">

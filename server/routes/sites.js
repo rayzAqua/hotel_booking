@@ -25,7 +25,7 @@ router.delete("/event/:id", verifyAdmin, deleteEvent);
 // UPDATE EVENT
 router.put("/event/:id", verifyAdmin, updateEvent)
 
-// GET ONE EVENL
+// GET ONE EVENT
 router.get("/event/id=:id", getEvent);
 
 // GET ALL EVENT

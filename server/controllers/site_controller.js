@@ -2,7 +2,6 @@ import Hotel from "../models/Hotel.js";
 import User from "../models/User.js";
 import EventTravel from "../models/EventTravel.js"
 import { createError } from "../utils/error.js";
-import e from "express";
 
 // ADD FAVORITE HOTEL
 export const addFavoriteHotel = async (req, res, next) => {
