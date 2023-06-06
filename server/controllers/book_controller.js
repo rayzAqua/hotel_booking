@@ -12,9 +12,14 @@ export const createBooking = async (req, res, next) => {
     const bookingStartDate = req.body.startDate;
     const bookingEndDate = req.body.endDate;
 
-    try {
+    try {  
+        const hotel = await Hotel.findById(bookingHotel);
+        if (!hotel) {
+            throw createError(404, "Can't find data!");
+        }
+
         // Xử lý kiểm tra số lượng phòng còn lại trước khi thực hiện booking. Tìm kiếm các phòng được phép đặt, nếu có phòng nào không
-        // được phép đặt thì báo lỗi, nếu hợp lệ thì trả về mảng phòng hợp lệ.
+        // được phép đặt thì báo lỗi, nếu hợp lệ thì trả về mảng phòng hợp lệ.F
         const validRooms = await Promise.all(
             bookingRooms.map(async (bookingRoom) => {
                 // Truy vấn đến đối tượng phòng trong đơn booking để kiểm tra số lượng phòng.
