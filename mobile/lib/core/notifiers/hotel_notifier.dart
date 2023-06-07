@@ -17,8 +17,7 @@ class HotelNotifier extends ChangeNotifier {
         hotelList.sort(priceCom);
         return hotelList;
       } else if (roomSort == RoomSort.ByRating) {
-        Comparator<Hotel> ratingCom =
-            (a, b) => a.cheapestPrice.compareTo(b.cheapestPrice);
+        Comparator<Hotel> ratingCom = (a, b) => a.rating!.compareTo(b.rating!);
         hotelList.sort(ratingCom);
         return hotelList;
       }
@@ -31,8 +30,7 @@ class HotelNotifier extends ChangeNotifier {
         hotelList.sort(priceCom);
         return hotelList;
       } else if (roomSort == RoomSort.ByRating) {
-        Comparator<Hotel> ratingCom =
-            (a, b) => b.cheapestPrice.compareTo(a.cheapestPrice);
+        Comparator<Hotel> ratingCom = (a, b) => b.rating!.compareTo(a.rating!);
         hotelList.sort(ratingCom);
         return hotelList;
       }

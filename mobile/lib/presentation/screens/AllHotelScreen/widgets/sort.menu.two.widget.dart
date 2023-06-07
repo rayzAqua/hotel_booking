@@ -51,7 +51,7 @@ class _SortMenuTwoState extends State<SortMenuTwo> {
           ),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
-            color: themeFlag ? AppColors.mirage : AppColors.creamColor,
+            color: AppColors.mirage,
           ),
           elevation: 8,
           offset: const Offset(0, 8),
