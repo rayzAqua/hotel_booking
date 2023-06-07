@@ -109,7 +109,7 @@ class SignUpScreen extends StatelessWidget {
                             ),
                             CustomTextField.customTextField(
                               themeFlag: themeFlag,
-                              hintText: 'Enter PhoneNumber',
+                              hintText: 'PhoneNumber',
                               inputType: TextInputType.number,
                               maxLength: 10,
                               textEditingController: userPhoneController,

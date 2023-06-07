@@ -85,7 +85,7 @@ class EventsItem extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '\$${eventsModel.price.toString()}/people',
+                      '${eventsModel.price.toString()}vnđ/people',
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(
