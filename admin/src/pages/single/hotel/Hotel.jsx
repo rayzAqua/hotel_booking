@@ -27,20 +27,21 @@ const Hotel = () => {
         const response = await axios.get(`/${path}/rooms/${id}`);
         setRoomList(response.data);
         setIsLoading(false);
-      } catch (error) {
-        // Xử lý lỗi nếu có
-        console.log(error);
+      } catch (err) {
         setIsLoading(false);
+        console.log(err);
       }
     };
 
     setList(data);
     fetchBookingList();
 
-  }, [data]);
+  }, [data, path, id]);
 
   console.log(list);
   console.log(roomList);
+
+  const formattedTotalPrice = parseInt(list?.cheapestPrice).toLocaleString("vi-VN");
 
   return (
     <div className="single">
@@ -55,10 +56,10 @@ const Hotel = () => {
               <Link to={`/${path}/update/${id}`} style={{ textDecoration: "none" }}>
                 <div className="editButton">Edit</div>
               </Link>
-              <h1 className="title">Hotel Infomation</h1>
+              <h1 className="title">Hotel Introdution</h1>
               <div className="item">
                 <img
-                  src={list?.photos}
+                  src={list?.photos || "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"}
                   alt=""
                   className="itemImg"
                 />
@@ -104,6 +105,10 @@ const Hotel = () => {
                   <div className="detailItem1">
                     <span className="itemKey1">Rating:</span>
                     <span className="itemValue1">{list?.rating}</span>
+                  </div>
+                  <div className="detailItem1">
+                    <span className="itemKey1">Cheapest Price:</span>
+                    <span className="itemValue1">{formattedTotalPrice} VND</span>
                   </div>
                 </div>
               </div>

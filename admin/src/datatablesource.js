@@ -75,22 +75,37 @@ export const roomColumns = [
   {
     field: "name",
     headerName: "Name",
-    width: 230,
+    width: 290,
+    valueGetter: (params) => params.row.name,
+    renderCell: (params) => {
+      return (
+        <div className="cellWithImg">
+          <img className="cellImg1" src={params.row.photos[0] || "https://i.ibb.co/MBtjqXQ/no-avatar.gif"} alt="avatar" />
+          <div className="cellContent">{params.row.name}</div>
+        </div>
+      );
+    },
+  },
+  {
+    field: "hotelName",
+    headerName: "Hotel",
+    width: 300,
   },
   {
     field: "type",
     headerName: "Type",
-    width: 200,
+    width: 150,
   },
   {
     field: "price",
     headerName: "Price",
-    width: 100,
-  },
-  {
-    field: "maxPeoples",
-    headerName: "Max People",
-    width: 100,
+    width: 140,
+    valueGetter: (params) => params.row.price,
+    renderCell: (params) => (
+      <div style={{ whiteSpace: "pre-line" }}>
+        {parseInt(params.value).toLocaleString("vi-VN")} VND
+      </div>
+    ),
   },
   {
     field: "quantity",
@@ -118,7 +133,7 @@ export const bookingColumns = [
   {
     field: "hotel",
     headerName: "Hotel",
-    width: 210,
+    width: 300,
     valueGetter: (params) => params.row.hotel?.name,
     renderCell: (params) => (
       <div style={{ whiteSpace: "pre-line" }}>
@@ -189,7 +204,7 @@ export const bookingColumns = [
     valueGetter: (params) => params.row.totalPrice,
     renderCell: (params) => (
       <div style={{ whiteSpace: "pre-line" }}>
-        {parseInt(params.value).toLocaleString("vi-VN")} VNĐ
+        {parseInt(params.value).toLocaleString("vi-VN")} VND
       </div>
     ),
   },
@@ -215,3 +230,41 @@ export const bookingColumns = [
   },
 ];
 
+export const eventColumns = [
+  { field: "_id", headerName: "ID", width: 230 },
+  {
+    field: "name",
+    headerName: "Event",
+    width: 300,
+    valueGetter: (params) => params.row.name,
+    renderCell: (params) => {
+      return (
+        <div className="cellWithImg">
+          <img className="cellImg" src={params.row.image || "https://i.ibb.co/MBtjqXQ/no-avatar.gif"} alt="avatar" />
+          {params.row.name}
+        </div>
+      );
+    },
+  },
+  {
+    field: "eventType",
+    headerName: "Type",
+    width: 130,
+  },
+  {
+    field: "location",
+    headerName: "Location",
+    width: 230,
+  },
+  {
+    field: "price",
+    headerName: "Price",
+    width: 130,
+    valueGetter: (params) => params.row.price,
+    renderCell: (params) => (
+      <div style={{ whiteSpace: "pre-line" }}>
+        {parseInt(params.row.price).toLocaleString("vi-VN")} VND
+      </div>
+    ),
+  },
+];

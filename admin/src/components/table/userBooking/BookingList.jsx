@@ -9,6 +9,11 @@ import Paper from "@mui/material/Paper";
 
 const BookingList = ({ bookingList, loading }) => {
 
+  const formattedTotalPrice = (cheapestPrice) => {
+    const newPrice = parseInt(cheapestPrice)
+    return newPrice.toLocaleString("vi-VN");
+  } 
+
   return (
     <TableContainer component={Paper} className="table">
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -74,10 +79,10 @@ const BookingList = ({ bookingList, loading }) => {
                 <TableCell className="tableCell">{row.rooms[0].name}</TableCell>
                 <TableCell className="tableCell">{row.rooms[0].type}</TableCell>
                 <TableCell className="tableCell">{row.rooms[0].quantity}</TableCell>
-                <TableCell className="tableCell">{row.totalPrice}</TableCell>
+                <TableCell className="tableCell">{formattedTotalPrice(row.totalPrice)} VND</TableCell>
                 <TableCell className="tableCell">
-                  <span className={`status ${row.isExpires}`}>
-                    {row.isExpires ? "Not Expires" : "Expires"}
+                  <span className={`status ${row?.isExpires}`}>
+                    {row?.isExpires ? "Expires" : "Not Expires"}
                   </span>
                 </TableCell>
               </TableRow>

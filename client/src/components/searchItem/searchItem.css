@@ -6,6 +6,7 @@
   justify-content: space-between;
   gap: 20px;
   margin-bottom: 20px;
+  width: 800px;
 }
 
 .siImg {
@@ -45,7 +46,10 @@
 }
 
 .siFeatures{
+  width: 400px;
   font-size: 12px;
+  text-align: justify;
+  text-indent: 20px;
 }
 
 .siCancelOp{
@@ -68,10 +72,11 @@
 
 .siRating{
   display: flex;
-  justify-content: space-between
+  justify-content:right;
 }
 
 .siRating>span{
+  margin-right: 10px;
   font-weight: 500;
 }
 .siRating>button{

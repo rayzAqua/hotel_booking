@@ -10,11 +10,17 @@ import "./style/dark.scss";
 import { useContext } from "react";
 import { DarkModeContext } from "./context/darkModeContext";
 import { AuthContext } from "./context/AuthContext";
-import { hotelColumns, roomColumns, userColumns, bookingColumns } from "./datatablesource";
+import { hotelColumns, roomColumns, userColumns, bookingColumns, eventColumns } from "./datatablesource";
 import NewHotel from "./pages/newHotel/NewHotel";
 import NewRoom from "./pages/newRoom/NewRoom";
 import UpdateUser from "./pages/updateUser/UpdateUser";
 import Hotel from "./pages/single/hotel/Hotel";
+import UpdateHotel from "./pages/updateHotel/UpdateHotel";
+import Room from "./pages/single/room/Room";
+import UpdateRoom from "./pages/updateRoom/UpdateRoom";
+import NewEvent from "./pages/newEvent/NewEvent";
+import Event from "./pages/single/event/Event";
+import UpdateEvent from "./pages/updateEvent/UpdateEvent";
 function App() {
   const { darkMode } = useContext(DarkModeContext);
 
@@ -105,7 +111,7 @@ function App() {
                 path="update/:hotelId"
                 element={
                   <ProtectedRoute>
-                    <UpdateUser title="Update User Infomation" />
+                    <UpdateHotel title="Update Hotel Infomation" />
                   </ProtectedRoute>
                 }
               />
@@ -123,7 +129,7 @@ function App() {
                 path=":roomId"
                 element={
                   <ProtectedRoute>
-                    <Booking />
+                    <Room />
                   </ProtectedRoute>
                 }
               />
@@ -132,6 +138,14 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <NewRoom />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="update/:roomId"
+                element={
+                  <ProtectedRoute>
+                    <UpdateRoom title="Update Room Infomation" />
                   </ProtectedRoute>
                 }
               />
@@ -150,6 +164,40 @@ function App() {
                 element={
                   <ProtectedRoute>
                     <Booking />
+                  </ProtectedRoute>
+                }
+              />
+            </Route>
+            <Route path="sites/event">
+              <Route
+                index
+                element={
+                  <ProtectedRoute>
+                    <List columns={eventColumns} />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path=":eventId"
+                element={
+                  <ProtectedRoute>
+                    <Event />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="new"
+                element={
+                  <ProtectedRoute>
+                    <NewEvent />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="update/:eventId"
+                element={
+                  <ProtectedRoute>
+                    <UpdateEvent title="Update Event Infomation" />
                   </ProtectedRoute>
                 }
               />

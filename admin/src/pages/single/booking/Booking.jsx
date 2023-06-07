@@ -93,6 +93,12 @@ const Booking = () => {
                     <span className="itemKey1">End:</span>
                     <span className="itemValue1">{formattedEndDate}</span>
                   </div>
+                  <div className="detailItem1">
+                    <span className="itemKey1">Expires:</span>
+                    <span className={`status ${list?.isExpires}`}>
+                      {list?.isExpires ? "Expires" : "Not Expires"}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>)}
@@ -158,7 +164,7 @@ const Booking = () => {
                 </div>
                 <div className="detailItem2">
                   <span className="itemKey2">Totals:</span>
-                  <span className="itemValue2">{formattedTotalPrice} VNĐ</span>
+                  <span className="itemValue2">{formattedTotalPrice} VND</span>
                 </div>
               </div>
             </div>

@@ -81,6 +81,11 @@ const UpdateUser = ({ title }) => {
       return;
     }
 
+    if (info.isAdmin && (info.isAdmin !== "true" && info.isAdmin !== "false")) {
+      alert("Admin field must have a value of true or false.");
+      return;
+    }
+
     const data = new FormData();
     data.append("file", file);
     data.append("upload_preset", "upload");
@@ -94,31 +99,39 @@ const UpdateUser = ({ title }) => {
         );
       }
 
-      const { url } = uploadRes?.data || {};
+      let newUser;
+      if (uploadRes && uploadRes.data && uploadRes.data.url) {
+        const { url } = uploadRes.data;
+        newUser = {
+          ...info,
+          image: url,
+        };
+      } else {
+        newUser = {
+          ...info,
+        }
+      }
 
-      const newUser = {
-        ...info,
-        ...(url && { image: url }),
-      };
+      console.log(newUser);
 
       const updateUser = await axios.put(`/users/${id}`, newUser);
       console.log(updateUser);
       alert("Update successful");
-      window.location.href = "http://localhost:3000/users"
+      window.location.href = `http://localhost:3000/users/${id}`
     } catch (err) {
       if (err.response) {
         // Phản hồi từ server với mã lỗi
         console.log(err.response.data);
         console.log(err.response.status);
-        alert("Failed to create user: " + err.response.data.message);
+        alert("Failed to update user: " + err.response.data.message);
       } else if (err.request) {
         // Yêu cầu đã được gửi nhưng không nhận được phản hồi từ server
         console.log(err.request);
-        alert("Failed to create user: No response from server");
+        alert("Failed to update user: No response from server");
       } else {
         // Có lỗi xảy ra trong quá trình gửi yêu cầu
         console.log("Error", err.message);
-        alert("Failed to create user: " + err.message);
+        alert("Failed to update user: " + err.message);
       }
     }
   };

@@ -107,7 +107,12 @@ export const getRoom = async (req, res, next) => {
             throw createError(404, "Can't find data!");
         }
 
-        res.status(200).json(getRoom);
+        const isAvailable = getRoom.quantity !== 0 ? true : false;
+
+        res.status(200).json({
+            ...getRoom._doc,
+            isAvailable: isAvailable
+        });
     } catch (err) {
         next(err);
     }

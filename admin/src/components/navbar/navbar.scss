@@ -66,6 +66,19 @@
           right: -5px;
         }
       }
+
+      .item1 {
+        display: flex;
+        align-items: center;
+        margin-right: 20px;
+        position: relative;
+        transition: transform 0.3s ease;
+        cursor: default;
+
+        &:hover {
+          transform: scale(1.1);
+        }
+      }
     }
   }
 }

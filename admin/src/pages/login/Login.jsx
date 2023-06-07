@@ -25,9 +25,9 @@ const Login = () => {
     try {
       const res = await axios.post("/auth/login", credentials);
       if (res.data.isAdmin) {
-        const {isAdmin, ...otherDetails} = res.data;
-        console.log({...otherDetails});
-        dispatch({ type: "LOGIN_SUCCESS", payload: {...otherDetails} });
+        const { isAdmin, ...otherDetails } = res.data;
+        console.log({ ...otherDetails });
+        dispatch({ type: "LOGIN_SUCCESS", payload: { ...otherDetails } });
 
         navigate("/");
       } else {
@@ -44,6 +44,7 @@ const Login = () => {
   return (
     <div className="login">
       <div className="lContainer">
+        <h2 class="adminTitle">Admin Booking</h2>
         <input
           type="text"
           placeholder="email"

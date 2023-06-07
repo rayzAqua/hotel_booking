@@ -9,6 +9,17 @@ import Paper from "@mui/material/Paper";
 
 const HotelRoom = ({ roomList, loading }) => {
 
+  // Format create date
+  const formattedCreateDate = (createdAt) => {
+    const created = new Date(createdAt);
+    return created.toLocaleString();
+  } 
+
+  const formattedTotalPrice = (cheapestPrice) => {
+    const newPrice = parseInt(cheapestPrice)
+    return newPrice.toLocaleString("vi-VN");
+  } 
+
   return (
     <TableContainer component={Paper} className="table">
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -70,9 +81,9 @@ const HotelRoom = ({ roomList, loading }) => {
                 <TableCell className="tableCell">{row._id}</TableCell>
                 <TableCell className="tableCell">{row.name}</TableCell>
                 <TableCell className="tableCell">{row.type}</TableCell>
-                <TableCell className="tableCell">{row.price}</TableCell>
+                <TableCell className="tableCell">{formattedTotalPrice(row.price)} VND</TableCell>
                 <TableCell className="tableCell">{row.quantity}</TableCell>
-                <TableCell className="tableCell">{row.createdAt}</TableCell>
+                <TableCell className="tableCell">{formattedCreateDate(row.createdAt)}</TableCell>
                 <TableCell className="tableCell">
                   <span className={`status ${row.isAvailable}`}>
                     {row.isAvailable ? "Available" : "Not Available"}

@@ -3,17 +3,25 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  background-size: cover;
+  background-position: center;
 }
 
 .lContainer {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  background-color: rgba(255, 255, 255, 0.9); /* Màu nền container */
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Đổ bóng container */
 }
 
-.lInput{
+.lInput {
   height: 30px;
   padding: 10px;
+  border: 1px solid #dddddd; /* Đường viền input */
+  border-radius: 3px;
 }
 
 .lButton {
@@ -24,9 +32,22 @@
   font-weight: bold;
   cursor: pointer;
   border-radius: 5px;
+  transition: background-color 0.3s ease; /* Hiệu ứng khi hover */
 }
 
-.lButton:disabled{
+.lButton:disabled {
   background-color: #0071c28c;
   cursor: not-allowed;
+}
+
+.lButton:hover {
+  background-color: #005ca9; /* Màu nền khi hover */
+}
+
+.adminTitle {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333333;
+  text-align: center;
+  margin-bottom: 20px;
 }

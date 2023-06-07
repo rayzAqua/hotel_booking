@@ -5,16 +5,16 @@ import { verifyAdmin, verifyUser } from "../utils/verifyToken.js";
 const router = express();
 
 // ADD FAVORITE HOTEL
-router.put("/favorite/:userid/add/:hotelid", verifyUser, addFavoriteHotel);
+router.put("/favorite/:id/add/:hotelid", verifyUser, addFavoriteHotel);
 
 // DELETE FAVORITE HOTEL
-router.delete("/favorite/:userid/remove/:hotelid", verifyUser, removeFavoriteHotel);
+router.delete("/favorite/:id/remove/:hotelid", verifyUser, removeFavoriteHotel);
 
 // GET ONE FAVORITE HOTEL
-router.get("/favorite/:userid/hotel/:hotelid", verifyUser, getOneFavoriteHotel);
+router.get("/favorite/:id/hotel/:hotelid", verifyUser, getOneFavoriteHotel);
 
 // GET ALL FAVORITE HOTEL
-router.get("/favorite/:userid/all-hotels/", verifyUser, getAllFavoriteHotel);
+router.get("/favorite/:id/all-hotels", verifyUser, getAllFavoriteHotel);
 
 // CREATE EVENT
 router.post("/event", verifyAdmin, createEvent);
@@ -25,7 +25,7 @@ router.delete("/event/:id", verifyAdmin, deleteEvent);
 // UPDATE EVENT
 router.put("/event/:id", verifyAdmin, updateEvent)
 
-// GET ONE EVENL
+// GET ONE EVENT
 router.get("/event/id=:id", getEvent);
 
 // GET ALL EVENT

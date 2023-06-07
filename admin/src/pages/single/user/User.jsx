@@ -26,9 +26,8 @@ const User = () => {
         const response = await axios.get(`/${path}/all-bookings/${id}`);
         setBookingList(response.data);
         setIsLoading(false);
-      } catch (error) {
-        // Xử lý lỗi nếu có
-        console.log(error);
+      } catch (err) {
+        console.log(err);
       }
     };
 
@@ -56,10 +55,10 @@ const User = () => {
               <Link to={`/${path}/update/${id}`} style={{ textDecoration: "none" }}>
                 <div className="editButton">Edit</div>
               </Link>
-              <h1 className="title">User Infomation</h1>
+              <h1 className="title">User Introdution</h1>
               <div className="item">
                 <img
-                  src={list?.image}
+                  src={list?.image || "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"}
                   alt=""
                   className="itemImg"
                 />
@@ -68,6 +67,12 @@ const User = () => {
                   <div className="detailItem">
                     <span className="itemKey">Email:</span>
                     <span className="itemValue">{list?.email}</span>
+                  </div>
+                  <div className="detailItem">
+                    <span className="itemKey">Admin:</span>
+                    <span className={`status ${list?.isAdmin}`}>
+                      {list?.isAdmin ? "True" : "False"}
+                    </span>
                   </div>
                 </div>
               </div>

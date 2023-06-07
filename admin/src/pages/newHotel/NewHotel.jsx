@@ -10,10 +10,6 @@ import axios from "axios";
 const NewHotel = () => {
   const [files, setFiles] = useState("");
   const [info, setInfo] = useState({});
-  const [rooms, setRooms] = useState([]);
-  const { data, loading, error } = useFetch("/rooms");
-
-  console.log(data);
 
   const hotelInputs = [
     {
@@ -67,7 +63,7 @@ const NewHotel = () => {
     {
       id: "description",
       label: "Description",
-      type: "text",
+      type: "textarea",
       placeholder: "description",
     },
     {
@@ -76,25 +72,97 @@ const NewHotel = () => {
       type: "text",
       placeholder: "100",
     },
+    {
+      id: "rating",
+      label: "Rating",
+      type: "text",
+      placeholder: "4.6",
+    },
   ];
 
   const handleChange = (e) => {
     setInfo((prev) => ({ ...prev, [e.target.id]: e.target.value }));
   };
 
-  const handleSelect = (e) => {
-    const value = Array.from(
-      e.target.selectedOptions,
-      (option) => option.value
-    );
-    setRooms(value);
-  };
-
   console.log(files)
 
   const handleClick = async (e) => {
     e.preventDefault();
-    
+
+    // Kiểm tra ràng buộc không được bỏ trống
+    if (
+      !info.name || info.name.trim() === "" ||
+      !info.address || info.address.trim() === "" ||
+      !info.city || info.city.trim() === "" ||
+      !info.type || info.type.trim() === "" ||
+      !info.phone || info.phone.trim() === "" ||
+      !info.latitude || info.latitude.trim() === "" ||
+      !info.longitude || info.longitude.trim() === "" ||
+      !info.title || info.title.trim() === "" ||
+      !info.description || info.description.trim() === "" ||
+      !info.cheapestPrice || info.cheapestPrice.trim() === "" ||
+      !info.rating || info.rating.trim() === ""
+    ) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+
+    // Kiểm tra các ràng buộc khác
+    if (!info.name?.match(/^[\w\s&]+$/)) {
+      alert("Invalid input for Name. Only alphanumeric characters, spaces, and '&' are allowed.");
+      return;
+    }
+
+    if (!info.address?.match(/^[\w,\s]+$/)) {
+      alert("Invalid input for Address. Only alphanumeric characters and ',' are allowed.");
+      return;
+    }
+
+    if (!info.city?.match(/^[A-Za-z\s]+$/)) {
+      alert("Invalid input for City. Only alphabetic characters are allowed.");
+      return;
+    }
+
+    if (!info.type?.match(/^[\w\s]+$/)) {
+      alert("Invalid input for Type. Only alphanumeric characters and space are allowed.");
+      return;
+    }
+
+    if (!info.phone?.match(/^\d{10}$/)) {
+      alert("Invalid input for Phone. Please enter a 10-digit number.");
+      return;
+    }
+
+    if (!info.latitude?.match(/^\d+(\.\d+)?$/)) {
+      alert("Invalid input for Latitude. Please enter a valid number. Only number and '.' are allowed.");
+      return;
+    }
+
+    if (!info.longitude?.match(/^\d+(\.\d+)?$/)) {
+      alert("Invalid input for Longitude. Please enter a valid number. Only number and '.' are allowed.");
+      return;
+    }
+
+    if (!info.title?.match(/^[\w\s]+$/)) {
+      alert("Invalid input for Title. Only alphanumeric characters are allowed.");
+      return;
+    }
+
+    if (info.description?.trim() === "") {
+      alert("Description cannot be empty.");
+      return;
+    }
+
+    if (!info.cheapestPrice?.match(/^\d+$/)) {
+      alert("Invalid input for Price. Only numeric characters are allowed.");
+      return;
+    }
+
+    if (!info.rating.match(/^\d+(\.\d+)?$/)) {
+      alert("Invalid input for Rating. Please enter a valid number. Only number and '.' are allowed.");
+      return;
+    }
+
     try {
       const list = await Promise.all(
         Object.values(files).map(async (file) => {
@@ -111,11 +179,17 @@ const NewHotel = () => {
         })
       );
 
-      const newhotel = {
-        ...info,
-        rooms,
-        photos: list,
-      };
+      let newhotel;
+      if (list && list.length > 0) {
+        newhotel = {
+          ...info,
+          photos: list,
+        };
+      } else {
+        newhotel = { ...info };
+      }
+
+      console.log(newhotel);
 
       const createdHotel = await axios.post("/hotels", newhotel);
       console.log(createdHotel);
@@ -126,15 +200,15 @@ const NewHotel = () => {
         // Phản hồi từ server với mã lỗi
         console.log(err.response.data);
         console.log(err.response.status);
-        alert("Failed to create user: " + err.response.data.message);
+        alert("Failed to create hotel: " + err.response.data.message);
       } else if (err.request) {
         // Yêu cầu đã được gửi nhưng không nhận được phản hồi từ server
         console.log(err.request);
-        alert("Failed to create user: No response from server");
+        alert("Failed to create hotel: No response from server");
       } else {
         // Có lỗi xảy ra trong quá trình gửi yêu cầu
         console.log("Error", err.message);
-        alert("Failed to create user: " + err.message);
+        alert("Failed to create hotel: " + err.message);
       }
     }
   };
@@ -175,12 +249,20 @@ const NewHotel = () => {
               {hotelInputs.map((input) => (
                 <div className="formInput" key={input.id}>
                   <label>{input.label}</label>
-                  <input
-                    id={input.id}
-                    onChange={handleChange}
-                    type={input.type}
-                    placeholder={input.placeholder}
-                  />
+                  {input.type === "textarea" ? (
+                    <textarea
+                      id={input.id}
+                      placeholder={input.placeholder}
+                      onChange={handleChange}
+                    />
+                  ) : (
+                    <input
+                      id={input.id}
+                      type={input.type}
+                      placeholder={input.placeholder}
+                      onChange={handleChange}
+                    />
+                  )}
                 </div>
               ))}
               <div className="formInput">
@@ -188,19 +270,6 @@ const NewHotel = () => {
                 <select id="featured" onChange={handleChange}>
                   <option value={false}>No</option>
                   <option value={true}>Yes</option>
-                </select>
-              </div>
-              <div className="selectRooms">
-                <label>Rooms</label>
-                <select id="rooms" multiple onChange={handleSelect}>
-                  {loading
-                    ? "loading..."
-                    : data &&
-                    data.map((room) => (
-                      <option key={room._id} value={room._id}>
-                        {room.name}
-                      </option>
-                    ))}
                 </select>
               </div>
               <button onClick={handleClick}>Send</button>
