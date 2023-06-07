@@ -130,7 +130,7 @@ class HomeScreen extends StatelessWidget {
                             List _snapshot = snapshot.data as List;
                             return ListView.builder(
                               shrinkWrap: true,
-                              itemCount: 4,
+                              itemCount: _snapshot.length,
                               scrollDirection: Axis.horizontal,
                               itemBuilder: (context, index) {
                                 Hotel hotelModel = _snapshot[index];

@@ -47,7 +47,7 @@ class AboutScreen extends StatelessWidget {
             height: mediaQueryHeight / 50,
           ),
           Text(
-            'Package Name: com.dev.hotelbooking',
+            'Package Name: com.dev.hotelbooking.HDV',
             textAlign: TextAlign.left,
             style: kBodyText.copyWith(
               fontSize: 16,
