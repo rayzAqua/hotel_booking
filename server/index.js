@@ -8,6 +8,7 @@ import roomsRoute from "./routes/rooms.js";
 import bookingsRoute from "./routes/bookings.js";
 import sitesRoute from "./routes/sites.js";
 import cookieParser from "cookie-parser";
+import cors from "cors";
 
 const app = express();
 
@@ -29,6 +30,7 @@ mongoose.connection.on("disconnected", () => {
 
 
 //Middlewares
+app.use(cors());
 app.use(cookieParser());
 
 // Phân tích các yêu cầu HTTP và chuyển đổi chúng thành dạng JSON, cho phép Express hiểu được các yêu cầu và phản hồi từ client-server
