@@ -37,7 +37,7 @@ export const deleteUser = async (req, res, next) => {
         // Tìm kiếm xem user có tồn tại không.
         const user = await User.findById(req.params.id);
 
-        if (req.user.id === user) {
+        if (req.user.id === user._id) {
             throw createError(400, "Can't not delete current user!");
         }
 
