@@ -1,4 +1,5 @@
 import Booking from "../models/Booking.js";
+import Room from "../models/Room.js";
 import User from "../models/User.js";
 import { createError } from "../utils/error.js";
 import { regex } from "../utils/regex.js";
@@ -36,10 +37,40 @@ export const deleteUser = async (req, res, next) => {
         // Tìm kiếm xem user có tồn tại không.
         const user = await User.findById(req.params.id);
 
+        if (req.user.id === user) {
+            throw createError(400, "Can't not delete current user!");
+        }
+
         // Nếu user tồn tại thì được phép xoá!
         if (!user) {
             throw createError(404, "Can't find this user!");
         }
+
+        await Promise.all(
+            user.bookings.map(async (booking) => {
+                const book = await Booking.findById(booking);
+                console.log(book);
+                if (book.isExpires === false) {
+                    await Promise.all(
+                        book.rooms.map(async (room) => {
+                            const rooms = await Room.findById(room.room);
+                            console.log(rooms);
+                            const currentQuantity = rooms.quantity + room.quantity;
+                            console.log(currentQuantity);
+                            await Room.findByIdAndUpdate(
+                                rooms._id,
+                                { $set: { quantity: currentQuantity } },
+                                { new: true }
+                            );
+                        })
+                    );
+                }
+            })
+        );
+
+        user.bookings.map(async (booking) => {
+            return await Booking.findByIdAndDelete(booking);
+        });
 
         const deletedUser = await User.findByIdAndDelete(user._id);
 
@@ -66,7 +97,7 @@ export const getUser = async (req, res, next) => {
         if (!getUser) {
             throw createError(404, "Can't find data!");
         }
-        
+
         res.status(200).json(getUser);
     } catch (err) {
         next(err);
@@ -160,7 +191,7 @@ export const getUserBookings = async (req, res, next) => {
                     photos: hotel.photos,
                 },
                 rooms: roomBookeds,
-                totalPrice: totalPrice * time, 
+                totalPrice: totalPrice * time,
                 ...otherDetails,
             }
         })
