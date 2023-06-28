@@ -117,7 +117,7 @@ class SearchItem extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      "\$${hotelModel.cheapestPrice.toString()}/room",
+                      "Only ${hotelModel.cheapestPrice.toString()}0000vnđ/room",
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: TextStyle(

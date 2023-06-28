@@ -324,7 +324,7 @@ class _BookingScreenState extends State<BookingScreen> {
                 height: 20,
               ),
               Text(
-                'Total Price: ${TotalPrice(selectedIndexQuan, roomPrice, bookingNotifier.startDate!, bookingNotifier.endDate!)}',
+                'Total Price: ${TotalPrice(selectedIndexQuan, roomPrice, bookingNotifier.startDate!, bookingNotifier.endDate!)}vnđ',
                 style: TextStyle(
                   color: AppColors.yellowish,
                   fontSize: 18,
@@ -361,7 +361,7 @@ class _BookingScreenState extends State<BookingScreen> {
                     var isSuccessful = await bookingNotifier.bookHotel(
                       widget.bookingScreenArgs.hotelData.id!,
                       hotelService.roomId![selectedIndex],
-                      int.parse(selectedQuantity!),
+                      selectedIndexQuan,
                       userData.userId!,
                       userData.token!,
                       bookingNotifier.startDate!,
@@ -403,7 +403,7 @@ int TotalPrice(int quantity, int roomPrice, String startDate, String endDate) {
   if (format.parse(startDate).isBefore(format.parse(endDate))) {
     totalPrice = quantity *
         roomPrice *
-        format.parse(endDate).difference(format.parse(endDate)).inDays;
+        format.parse(endDate).difference(format.parse(startDate)).inDays;
   } else {
     totalPrice = 0;
   }
