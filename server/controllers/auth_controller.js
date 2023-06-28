@@ -105,7 +105,9 @@ export const login = async (req, res, next) => {
         // - Lưu lại token vào cookie và thực hiện bảo mật cho token bằng cách gọi httpOnly: true (Ngăn chặn client truy cập tới token).
         // - Đặt mã trạng thái HTTP là 200 (Success)
         // - Gửi đến client thông tin dưới dạng json.
-        res.cookie("access_token", jwt_token, { httpOnly: true }).status(200).json({...otherDetails });
+        localStorage.setItem("access_token", jwt_token);
+        res.status(200).json({ ...otherDetails });
+        // res.cookie("access_token", jwt_token, { httpOnly: true }).status(200).json({...otherDetails });
     } catch (err) {
         next(err);
     }

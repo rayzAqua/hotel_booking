@@ -5,7 +5,8 @@ import {createError} from "../utils/error.js";
 export const verifyToken = (req, res, next) => {
     // req lúc này sẽ chứa thông tin được gửi từ client và cookie của client đó.
     // Lấy về token từ request và kiểm tra xem token đó có rỗng hay không !
-    const jwt_token = req.cookies.access_token;
+    // const jwt_token = req.cookies.access_token;
+    const jwt_token = localStorage.getItem("access_token");
     if (!jwt_token) return next(createError(401, "You are not authenticated !"));
 
     // Nếu có token thì tiến hành xác nhận token đó. Nếu đúng thì trả về userInfo nếu không thì trả về err.
