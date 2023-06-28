@@ -1,5 +1,7 @@
 import jwt from "jsonwebtoken";
 import {createError} from "../utils/error.js";
+import { LocalStorage } from "node-localstorage";
+const localStorage = new LocalStorage('./scratch');
 
 // XÁC MINH TOKEN
 export const verifyToken = (req, res, next) => {

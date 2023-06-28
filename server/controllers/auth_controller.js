@@ -6,6 +6,8 @@ import crypto from "crypto";
 import Token from "../models/Token.js";
 import { sendEmail } from "../utils/sendEmail.js";
 import dotenv from "dotenv";
+import { LocalStorage } from "node-localstorage";
+const localStorage = new LocalStorage('./scratch');
 
 dotenv.config();
 
